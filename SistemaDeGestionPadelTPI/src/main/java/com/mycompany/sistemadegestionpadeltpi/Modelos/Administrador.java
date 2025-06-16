@@ -1,7 +1,9 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
 
+public class Administrador extends Usuario{
 
-
-public class Administrador {
-
+    public Administrador(int Id, String nombre) {
+        super(Id, nombre);
+    }
+    
 }
