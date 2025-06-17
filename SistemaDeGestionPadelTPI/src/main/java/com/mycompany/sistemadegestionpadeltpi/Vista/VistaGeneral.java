@@ -2,12 +2,10 @@ package com.mycompany.sistemadegestionpadeltpi.Vista;
 
 import java.util.Scanner;
 
-
-
 public class VistaGeneral {
     private Scanner s = new Scanner(System.in);
 
-    public int mostrarMenuAdministrador() {
+    public int mostrarMenuGeneral() {
         int opcion = 0;
         System.out.println();
         System.out.println("||| SISTEMA DE GESTION DE PADEL |||");
