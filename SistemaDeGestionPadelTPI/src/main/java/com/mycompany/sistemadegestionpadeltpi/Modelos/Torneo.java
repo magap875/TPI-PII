@@ -3,16 +3,18 @@ import java.util.*;
 
 public class Torneo {
  private String nombre;
- private String Categoria;
+ private String categoria;
  private String estado;
  private List<Pareja> parejasInscriptas=new ArrayList<>();
  private List<Grupo> fixture=new ArrayList<>();
  private List<Partido> playoffs=new ArrayList<>();
+ private int capacidadMaxima;
 
-    public Torneo(String nombre, String Categoria, String estado) {
+    public Torneo(String nombre, String categoria, String estado, int capacidadMaxima) {
         this.nombre = nombre;
-        this.Categoria = Categoria;
+        this.categoria = categoria;
         this.estado = estado;
+        this.capacidadMaxima = capacidadMaxima;
     }
 
     public String getNombre() {
@@ -24,11 +26,11 @@ public class Torneo {
     }
 
     public String getCategoria() {
-        return Categoria;
+        return categoria;
     }
 
-    public void setCategoria(String Categoria) {
-        this.Categoria = Categoria;
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public String getEstado() {
@@ -62,6 +64,15 @@ public class Torneo {
     public void setPlayoffs(List<Partido> playoffs) {
         this.playoffs = playoffs;
     }
- 
+
+    public int getCapacidadMaxima() {
+        return capacidadMaxima;
+    }
+
+    public void setCapacidadMaxima(int capacidadMaxima) {
+        this.capacidadMaxima = capacidadMaxima;
+    }
+    
+    
 
 }
