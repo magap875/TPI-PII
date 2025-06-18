@@ -1,13 +1,15 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
 import java.util.*;
 public class Partido {
+  private int idPartido;
   private Pareja pareja1;
   private Pareja pareja2;
   private Date fecha;
   private Resultado resultado;
   private String fase;
 
-    public Partido(Pareja pareja1, Pareja pareja2, Date fecha, Resultado resultado, String fase) {
+    public Partido(int idPartido, Pareja pareja1, Pareja pareja2, Date fecha, Resultado resultado, String fase) {
+        this.idPartido = idPartido;
         this.pareja1 = pareja1;
         this.pareja2 = pareja2;
         this.fecha = fecha;
@@ -15,12 +17,24 @@ public class Partido {
         this.fase = fase;
     }
 
+    public Partido() {
+    }
+
+
     public Pareja getPareja1() {
         return pareja1;
     }
 
     public void setPareja1(Pareja pareja1) {
         this.pareja1 = pareja1;
+    }
+
+    public int getIdPartido() {
+        return idPartido;
+    }
+
+    public void setIdPartido(int idPartido) {
+        this.idPartido = idPartido;
     }
 
     public Pareja getPareja2() {

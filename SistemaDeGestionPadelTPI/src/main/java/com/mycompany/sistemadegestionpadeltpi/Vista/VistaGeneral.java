@@ -6,7 +6,7 @@ public class VistaGeneral {
     private Scanner s = new Scanner(System.in);
 
     public int mostrarMenuGeneral() {
-        int opcion = 0;
+        int opcion;
         System.out.println();
         System.out.println("||| SISTEMA DE GESTION DE PADEL |||");
         System.out.println("1. Ingrese como usuario.");

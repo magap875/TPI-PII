@@ -3,12 +3,22 @@ import java.util.*;
 
 
 public class Resultado {
-  private List<Integer> setsPareja1=new ArrayList<>();
-  private List<Integer> setsPareja2=new ArrayList<>();
+  private int idResultado;
+  private List<Integer> setsPareja1;
+  private List<Integer> setsPareja2;
 
     public Resultado() {
     }
 
+    public Resultado(int idResultado, List<Integer> setsPareja1, List<Integer> setsPareja2) {
+        this.idResultado = idResultado;
+        this.setsPareja1 = setsPareja1;
+        this.setsPareja2 = setsPareja2;
+    }
+
+    public int getIdResultado() {
+        return idResultado;
+    }
     public List<Integer> getSetsPareja1() {
         return setsPareja1;
     }
