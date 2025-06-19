@@ -8,12 +8,11 @@ public class SistemaDeGestionPadelTPI {
 
     public static void main(String[] args) {
         try {
-     
+
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-        
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bdpadel", "root", "popi2025");
-     
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bdpadel", "root", "frodo123");
+
             ControladorGeneral controlador = new ControladorGeneral(con);
             controlador.ejecutarMenuGeneral();
 
@@ -24,4 +23,3 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 }
-

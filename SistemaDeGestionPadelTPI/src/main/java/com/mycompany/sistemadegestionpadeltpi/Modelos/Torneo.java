@@ -2,13 +2,13 @@ package com.mycompany.sistemadegestionpadeltpi.Modelos;
 import java.util.*;
 
 public class Torneo {
- private String nombre;
- private String categoria;
- private String estado;
- private List<Pareja> parejasInscriptas=new ArrayList<>();
- private List<Grupo> fixture=new ArrayList<>();
- private List<Partido> playoffs=new ArrayList<>();
- private int capacidadMaxima;
+    private String nombre;
+    private String categoria;
+    private String estado;
+    private List<Pareja> parejasInscriptas = new ArrayList<>();
+    private List<Grupo> fixture = new ArrayList<>();
+    private List<Partido> playoffs = new ArrayList<>();
+    private int capacidadMaxima;
 
     public Torneo(String nombre, String categoria, String estado, int capacidadMaxima) {
         this.nombre = nombre;
@@ -72,7 +72,5 @@ public class Torneo {
     public void setCapacidadMaxima(int capacidadMaxima) {
         this.capacidadMaxima = capacidadMaxima;
     }
-    
-    
 
 }

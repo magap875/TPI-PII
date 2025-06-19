@@ -4,12 +4,12 @@ import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
 import java.sql.Connection;
 
 public class ControladorGeneral {
+
     private VistaGeneral vistaGeneral = new VistaGeneral();
     private ControladorJugador controladorJugador;
     private ControladorUsuario controladorUsuario;
     private ControladorAdministrador controladorAdministrador;
-
-
+    
     public ControladorGeneral(Connection conexion) {
         this.controladorJugador = new ControladorJugador(conexion);
         //this.controladorUsuario = new ControladorUsuario(conexion);
@@ -21,11 +21,15 @@ public class ControladorGeneral {
         do {
             opcion = vistaGeneral.mostrarMenuGeneral();
             switch (opcion) {
-                case 1 -> controladorUsuario.ejecutarMenuUsuario();
-                case 2 -> controladorJugador.ejecutarMenuJugador();
-                case 3 -> controladorAdministrador.ejecutarMenuAdministrador();
-                case 0 -> vistaGeneral.mensaje("Saliendo del sistema...");
- 
+                case 1 ->
+                    controladorUsuario.ejecutarMenuUsuario();
+                case 2 ->
+                    controladorJugador.ejecutarMenuJugador();
+                case 3 ->
+                    controladorAdministrador.ejecutarMenuAdministrador();
+                case 0 ->
+                    vistaGeneral.mensaje("Saliendo del sistema...");
+
             }
         } while (opcion != 0);
     }

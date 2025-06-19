@@ -1,17 +1,20 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
-public class Pareja {
- private int idPareja;
- private Jugador jugador1;
- private Jugador jugador2;
- private String categoria;
 
-    public Pareja(int idPareja, Jugador jugador1, Jugador jugador2, String categoria) {
+public class Pareja {
+
+    private int idPareja;
+    private String nombreJugador1;
+    private String nombreJugador2;
+
+    public Pareja(int idPareja, String nombreJugador1, String nombreJugador2) {
         this.idPareja = idPareja;
-        this.jugador1 = jugador1;
-        this.jugador2 = jugador2;
-        this.categoria = categoria;
+        this.nombreJugador1 = nombreJugador1;
+        this.nombreJugador2 = nombreJugador2;
     }
 
+    public Pareja() {
+    }
+    
     public int getIdPareja() {
         return idPareja;
     }
@@ -20,30 +23,20 @@ public class Pareja {
         this.idPareja = idPareja;
     }
 
-    
-
-    public Jugador getJugador1() {
-        return jugador1;
+    public String getNombreJugador1() {
+        return nombreJugador1;
     }
 
-    public void setJugador1(Jugador jugador1) {
-        this.jugador1 = jugador1;
+    public void setNombreJugador1(String nombreJugador1) {
+        this.nombreJugador1 = nombreJugador1;
     }
 
-    public Jugador getJugador2() {
-        return jugador2;
+    public String getNombreJugador2() {
+        return nombreJugador2;
     }
 
-    public void setJugador2(Jugador jugador2) {
-        this.jugador2 = jugador2;
+    public void setNombreJugador2(String nombreJugador2) {
+        this.nombreJugador2 = nombreJugador2;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
- 
 }

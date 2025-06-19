@@ -2,10 +2,10 @@ package com.mycompany.sistemadegestionpadeltpi.Controlador;
 
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaAdministrador;
 
-
 public class ControladorAdministrador {
+
     private VistaAdministrador vista = new VistaAdministrador();
-    
+
     public void ejecutarMenuAdministrador() {
         int opcion = 0;
         do {
@@ -25,28 +25,28 @@ public class ControladorAdministrador {
             }
         } while (opcion != 0);
     }
-      
-    public void consultarPartidos(){
-    
+
+    public void consultarPartidos() {
+
     }
-    
-    public void verResultados(){
-    
+
+    public void verResultados() {
+
     }
-    
-    public void verClasificacion(){
-    
+
+    public void verClasificacion() {
+
     }
-    
-    public void inscribirseATorneo(){
-    
+
+    public void inscribirseATorneo() {
+
     }
-    
-    public void crearTorneo(){
-        
+
+    public void crearTorneo() {
+
     }
-    
-    public void cargarResultado(){
-        
+
+    public void cargarResultado() {
+
     }
 }

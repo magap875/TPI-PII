@@ -3,6 +3,7 @@ package com.mycompany.sistemadegestionpadeltpi.Controlador;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaUsuario;
 
 public class ControladorUsuario {
+
     private VistaUsuario vista = new VistaUsuario();
 
     public void ejecutarMenuUsuario() {
@@ -20,17 +21,17 @@ public class ControladorUsuario {
             }
         } while (opcion != 0);
     }
-      
-    public void consultarPartidos(){
-    
+
+    public void consultarPartidos() {
+
     }
-    
-    public void verResultados(){
-    
+
+    public void verResultados() {
+
     }
-    
-    public void verClasificacion(){
-    
+
+    public void verClasificacion() {
+
     }
-    
+
 }

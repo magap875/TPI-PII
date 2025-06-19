@@ -1,10 +1,12 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
+
 import java.util.*;
 
 public class Grupo {
-  private String idGrupo;
-  private List<Pareja> parejas=new ArrayList<>();
-  private List<Partido> partidos=new ArrayList<>();
+
+    private String idGrupo;
+    private List<Pareja> parejas = new ArrayList<>();
+    private List<Partido> partidos = new ArrayList<>();
 
     public Grupo(String idGrupo) {
         this.idGrupo = idGrupo;
@@ -33,5 +35,5 @@ public class Grupo {
     public void setPartidos(List<Partido> partidos) {
         this.partidos = partidos;
     }
-  
+
 }

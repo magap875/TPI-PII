@@ -1,25 +1,23 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
-import java.util.*;
-public class Partido {
-  private int idPartido;
-  private Pareja pareja1;
-  private Pareja pareja2;
-  private Date fecha;
-  private Resultado resultado;
-  private String fase;
 
-    public Partido(int idPartido, Pareja pareja1, Pareja pareja2, Date fecha, Resultado resultado, String fase) {
+import java.util.*;
+
+public class Partido {
+
+    private int idPartido;
+    private Pareja pareja1;
+    private Pareja pareja2;
+    private String resultado;
+
+    public Partido(int idPartido, Pareja pareja1, Pareja pareja2, String resultado) {
         this.idPartido = idPartido;
         this.pareja1 = pareja1;
         this.pareja2 = pareja2;
-        this.fecha = fecha;
         this.resultado = resultado;
-        this.fase = fase;
     }
 
     public Partido() {
     }
-
 
     public Pareja getPareja1() {
         return pareja1;
@@ -44,29 +42,13 @@ public class Partido {
     public void setPareja2(Pareja pareja2) {
         this.pareja2 = pareja2;
     }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public Resultado getResultado() {
+    public String getResultado() {
         return resultado;
     }
 
-    public void setResultado(Resultado resultado) {
+    public void setResultado(String resultado) {
         this.resultado = resultado;
     }
 
-    public String getFase() {
-        return fase;
-    }
 
-    public void setFase(String fase) {
-        this.fase = fase;
-    }
-  
 }
