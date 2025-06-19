@@ -1,4 +1,5 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
+
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
@@ -8,26 +9,28 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
+import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 
 public class ControladorJugador {
 
     private VistaJugador vistaJugador = new VistaJugador();
     private VistaGeneral vistaGeneral = new VistaGeneral();
     private Connection conexion;
-    private List<Jugador> jugadores;
+    private List<Jugador> listaJugadores;
     private JugadorDAO jugadorDAO;
     private Scanner s = new Scanner(System.in);
     private ParejaDAO parejaDAO;
+    private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI();
 
     public ControladorJugador(Connection conexion) {
-    this.conexion = conexion;
-    this.jugadorDAO = new JugadorDAO(conexion);
-    this.parejaDAO = new ParejaDAO(conexion);
-    this.vistaJugador = new VistaJugador();
-    this.jugadores = new ArrayList<>();
-}
-
-   
+        this.conexion = conexion;
+        this.jugadorDAO = new JugadorDAO(conexion);
+        this.parejaDAO = new ParejaDAO(conexion);
+        this.vistaJugador = new VistaJugador();
+        sistema.traerJugadoresDesdeBD(conexion);
+        this.listaJugadores = new ArrayList<>(sistema.getListaJugadores());
+    }
 
     public void ejecutarMenuJugador() {
         int opcion;
@@ -44,8 +47,6 @@ public class ControladorJugador {
                     verClasificacion();
                 case 5 ->
                     inscribirseATorneo();
-               
-
 
             }
         } while (opcion != 0);
@@ -69,9 +70,8 @@ public class ControladorJugador {
     }
 
     public void consultarPartidos() {
-        
-    }
 
+    }
 
     public void verResultados() {
 
@@ -81,10 +81,37 @@ public class ControladorJugador {
 
     }
 
-    public void inscribirseATorneo() {
+   public void inscribirseATorneo() {
+    vistaJugador.mensaje("*** Registre la pareja ***");
 
+    try {
+        int idPareja = Integer.parseInt(vistaJugador.pedirDato("ID de la pareja: "));
+        int idIntegrante1 = Integer.parseInt(vistaJugador.pedirDato("ID del primer jugador: "));
+        int idIntegrante2 = Integer.parseInt(vistaJugador.pedirDato("ID del segundo jugador: "));
+
+        Jugador jugador1 = null;
+        Jugador jugador2 = null;
+
+        for (Jugador j : listaJugadores) {
+            if (j.getId() == idIntegrante1) {
+                jugador1 = j;
+            } else if (j.getId() == idIntegrante2) {
+                jugador2 = j;
+            }
+        }
+
+        if (jugador1 != null && jugador2 != null) {
+            Pareja pareja = new Pareja(idPareja, jugador1, jugador2);
+            ParejaDAO dao = new ParejaDAO(conexion);
+            dao.insertarPareja(pareja);
+            vistaJugador.mensaje("Registro exitoso.");
+        } else {
+            vistaJugador.mensaje("Uno o ambos jugadores no existen.");
+        }
+
+    } catch (Exception e) {
+        vistaJugador.mensaje("Error al registrar: " + e.getMessage());
     }
-
 }
 
-
+}

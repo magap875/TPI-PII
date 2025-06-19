@@ -1,3 +1,5 @@
+package com.mycompany.sistemadegestionpadeltpi.Main;
+
 
 import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorGeneral;
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
@@ -20,19 +22,35 @@ public class SistemaDeGestionPadelTPI {
     private JugadorDAO jugadorDAO;
     private ParejaDAO parejaDAO;
 
+    public SistemaDeGestionPadelTPI() {
+    }
+    
     public static void main(String[] args) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bdpadel", "root", "882626.Facu");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bdpadel", "root", "frodo1234");
 
             SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI();
             sistema.jugadorDAO = new JugadorDAO(con);
             sistema.traerJugadoresDesdeBD(con);
-            sistema.traerParejasDesdeBD();
+            sistema.traerParejasDesdeBD(con);
+            sistema.traerPartidosDesdeBD(con);
+            
             System.out.println("=== LISTA DE JUGADORES ===");
             for (Jugador j : sistema.listaJugadores) {
                 System.out.println(j);
             }
+            
+            System.out.println("=== LISTA DE PAREJAS ===");
+            for (Pareja p : sistema.listaParejas) {
+                System.out.println(p);
+            }
+            
+            System.out.println("=== LISTA DE PARTIDOS ===");
+            for (Partido p : sistema.listaPartidos) {
+                System.out.println(p);
+            }
+            
 
             ControladorGeneral controlador = new ControladorGeneral(con);
             controlador.ejecutarMenuGeneral();
@@ -43,11 +61,10 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
-    private void traerParejasDesdeBD() {
+    public void traerParejasDesdeBD(Connection con) {
         listaParejas.clear();
         try {
             String sql = "SELECT * FROM pareja";
-            Connection con = jugadorDAO != null ? jugadorDAO.conexion : null;
             if (con == null) {
                 return;
             }
@@ -72,7 +89,7 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
-    private void traerJugadoresDesdeBD(Connection con) {
+    public void traerJugadoresDesdeBD(Connection con) {
         listaJugadores.clear();
         try {
             String sql = "SELECT * FROM jugador";
@@ -94,7 +111,7 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
-    private void traerPartidosDesdeBD(Connection con, ParejaDAO parejaDAO) {
+    public void traerPartidosDesdeBD(Connection con) {
         listaPartidos.clear();
         try {
             String sql = "SELECT * FROM partido";
@@ -116,6 +133,18 @@ public class SistemaDeGestionPadelTPI {
         } catch (Exception e) {
             System.out.println("Error al traer partidos: " + e.getMessage());
         }
+    }
+
+    public List<Jugador> getListaJugadores() {
+        return listaJugadores;
+    }
+
+    public List<Pareja> getListaParejas() {
+        return listaParejas;
+    }
+
+    public List<Partido> getListaPartidos() {
+        return listaPartidos;
     }
 
 }

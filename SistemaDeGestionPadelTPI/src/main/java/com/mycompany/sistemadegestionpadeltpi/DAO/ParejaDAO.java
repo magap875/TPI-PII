@@ -27,7 +27,6 @@ public class ParejaDAO {
             ps.setInt(1, pareja.getJugador1().getId());
             ps.setInt(2, pareja.getJugador2().getId());
             ps.executeUpdate();
-            parejas.add(pareja);
         }
     }
     
