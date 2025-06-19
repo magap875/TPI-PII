@@ -1,5 +1,6 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
 
+import com.mycompany.sistemadegestionpadeltpi.DAO.GrupoDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
+import java.util.Random;
 
 public class ControladorJugador {
 
@@ -88,7 +90,7 @@ public class ControladorJugador {
         int idPareja = Integer.parseInt(vistaJugador.pedirDato("ID de la pareja: "));
         int idIntegrante1 = Integer.parseInt(vistaJugador.pedirDato("ID del primer jugador: "));
         int idIntegrante2 = Integer.parseInt(vistaJugador.pedirDato("ID del segundo jugador: "));
-
+        
         Jugador jugador1 = null;
         Jugador jugador2 = null;
 
@@ -101,10 +103,25 @@ public class ControladorJugador {
         }
 
         if (jugador1 != null && jugador2 != null) {
-            Pareja pareja = new Pareja(idPareja, jugador1, jugador2);
+            // Obtener grupo aleatorio
+            GrupoDAO grupoDAO = new GrupoDAO(conexion);
+            List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
+
+            if (idsGrupo.isEmpty()) {
+                vistaJugador.mensaje("No hay grupos disponibles.");
+                return;
+            }
+
+            String idGrupoAleatorio = idsGrupo.get(new Random().nextInt(idsGrupo.size()));
+
+            // Crear pareja con grupo asignado
+            Pareja pareja = new Pareja(idPareja, jugador1, jugador2,null);
+            pareja.setIdGrupo(idGrupoAleatorio);
+            GrupoDAO grupoDao=new GrupoDAO(conexion);
             ParejaDAO dao = new ParejaDAO(conexion);
-            dao.insertarPareja(pareja);
-            vistaJugador.mensaje("Registro exitoso.");
+            dao.insertarPareja(pareja,grupoDao);
+
+            vistaJugador.mensaje("Registro exitoso en el grupo " + idGrupoAleatorio + ".");
         } else {
             vistaJugador.mensaje("Uno o ambos jugadores no existen.");
         }
@@ -113,5 +130,4 @@ public class ControladorJugador {
         vistaJugador.mensaje("Error al registrar: " + e.getMessage());
     }
 }
-
 }

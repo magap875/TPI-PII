@@ -1,0 +1,149 @@
+package com.mycompany.sistemadegestionpadeltpi.Main;
+import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorGeneral;
+import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
+import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
+import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
+import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
+import com.mycompany.sistemadegestionpadeltpi.Modelos.Partido;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SistemaDeGestionPadelTPI {
+
+    private List<Jugador> listaJugadores = new ArrayList<>();
+    private List<Pareja> listaParejas = new ArrayList<>();
+    private List<Partido> listaPartidos = new ArrayList<>();
+    private JugadorDAO jugadorDAO;
+    private ParejaDAO parejaDAO;
+
+    public SistemaDeGestionPadelTPI() {
+    }
+    
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bdpadel", "root", "frodo1234");
+
+            SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI();
+            sistema.jugadorDAO = new JugadorDAO(con);
+            sistema.traerJugadoresDesdeBD(con);
+            sistema.traerParejasDesdeBD(con);
+            sistema.traerPartidosDesdeBD(con);
+            
+            System.out.println("=== LISTA DE JUGADORES ===");
+            for (Jugador j : sistema.listaJugadores) {
+                System.out.println(j);
+            }
+            
+            System.out.println("=== LISTA DE PAREJAS ===");
+            for (Pareja p : sistema.listaParejas) {
+                System.out.println(p);
+            }
+            
+            System.out.println("=== LISTA DE PARTIDOS ===");
+            for (Partido p : sistema.listaPartidos) {
+                System.out.println(p);
+            }
+            
+
+            ControladorGeneral controlador = new ControladorGeneral(con);
+            controlador.ejecutarMenuGeneral();
+
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void traerParejasDesdeBD(Connection con) {
+        listaParejas.clear();
+        try {
+            String sql = "SELECT * FROM pareja";
+            if (con == null) {
+                return;
+            }
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int idPareja = rs.getInt("idPareja");
+                int idJugador1 = rs.getInt("idJugador1");
+                int idJugador2 = rs.getInt("idJugador2");
+                String idGrupo=rs.getString("idGrupo");
+                Jugador jugador1 = jugadorDAO.buscarJugadorPorId(idJugador1);
+                Jugador jugador2 = jugadorDAO.buscarJugadorPorId(idJugador2);
+
+                Pareja pareja = new Pareja(idPareja, jugador1, jugador2,idGrupo);
+                listaParejas.add(pareja);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+        }
+    }
+
+    public void traerJugadoresDesdeBD(Connection con) {
+        listaJugadores.clear();
+        try {
+            String sql = "SELECT * FROM jugador";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombreJugador");
+                String dni = rs.getString("dniJugador");
+                String telefono = rs.getString("telefonoJugador");
+
+                Jugador jugador = new Jugador(id, nombre, dni, telefono);
+                listaJugadores.add(jugador);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al traer jugadores: " + e.getMessage());
+        }
+    }
+
+    public void traerPartidosDesdeBD(Connection con) {
+        listaPartidos.clear();
+        try {
+            String sql = "SELECT * FROM partido";
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int id = rs.getInt("idPartido");
+                int idPareja1 = rs.getInt("idPareja1");
+                int idPareja2 = rs.getInt("idPareja2");
+                String idGrupo=rs.getString("idGrupo");
+                String resultado = rs.getString("resultado");
+
+                Pareja pareja1 = parejaDAO.buscarParejaPorId(idPareja1);
+                Pareja pareja2 = parejaDAO.buscarParejaPorId(idPareja2);
+
+                listaPartidos.add(new Partido(id, pareja1, pareja2, resultado,idGrupo));
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al traer partidos: " + e.getMessage());
+        }
+    }
+
+    public List<Jugador> getListaJugadores() {
+        return listaJugadores;
+    }
+
+    public List<Pareja> getListaParejas() {
+        return listaParejas;
+    }
+
+    public List<Partido> getListaPartidos() {
+        return listaPartidos;
+    }
+
+}
