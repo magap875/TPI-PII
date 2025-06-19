@@ -1,13 +1,10 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
-
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
-import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaJugador;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -47,6 +44,7 @@ public class ControladorJugador {
                     verClasificacion();
                 case 5 ->
                     inscribirseATorneo();
+               
 
 
             }
@@ -71,13 +69,7 @@ public class ControladorJugador {
     }
 
     public void consultarPartidos() {
-        String nombre = vistaJugador.pedirDato("Ingrese el NOMBRE del jugador a consultar: ");
-        buscarJugadorPorNombre(nombre);
-        for (Pareja p : mostrarTodasLasParejas()){
-            if (nombre.equalsIgnoreCase(p.getNombreJugador1()) || (nombre.equalsIgnoreCase(p.getNombreJugador2()))) { 
-                
-            }
-        }
+        
     }
 
 
@@ -91,32 +83,6 @@ public class ControladorJugador {
 
     public void inscribirseATorneo() {
 
-    }
-
-    public Jugador buscarJugadorPorNombre(String nombre) {
-        try {
-            Jugador jugador = jugadorDAO.buscarPorNombre(nombre);
-            if (jugador == null) {
-                vistaJugador.mensaje("Jugador no encontrado.");
-            }
-            return jugador;
-        } catch (SQLException e) {
-            vistaJugador.mensaje("Error al buscar jugador: " + e.getMessage());
-            return null; 
-        }
-    }
-
-    public List<Pareja> mostrarTodasLasParejas() {
-        try {
-            List<Pareja> parejas = parejaDAO.obtenerTodas();
-            if (parejas.isEmpty()) {
-                vistaGeneral.mensaje("No hay parejas registradas.");
-            }
-            return parejas; 
-        } catch (SQLException e) {
-            vistaGeneral.mensaje("Error al mostrar parejas: " + e.getMessage());
-            return null;
-        }
     }
 
 }

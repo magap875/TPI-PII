@@ -26,4 +26,15 @@ public class Jugador extends Usuario {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    @Override
+    public String toString() {
+        return "Jugador{"
+                + "id=" + getId()
+                + ", nombre='" + getNombre() + '\''
+                + ", dni='" + dni + '\''
+                + ", telefono='" + telefono + '\''
+                + '}';
+    }
+
 }
