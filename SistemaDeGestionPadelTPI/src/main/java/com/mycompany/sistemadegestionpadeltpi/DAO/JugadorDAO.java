@@ -20,8 +20,9 @@ public class JugadorDAO {
             ps.setString(3, jugador.getTelefono());
             ps.executeUpdate();
         }
+    
     }
-
+    
     public Jugador buscarJugadorPorId(int id) throws SQLException {
         String sql = "SELECT * FROM jugador WHERE id = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
