@@ -1,19 +1,19 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
-
+import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
 import java.sql.Connection;
-
 public class ControladorGeneral {
 
     private VistaGeneral vistaGeneral = new VistaGeneral();
     private ControladorJugador controladorJugador;
     private ControladorUsuario controladorUsuario;
     private ControladorAdministrador controladorAdministrador;
-    
-    public ControladorGeneral(Connection conexion) {
-        this.controladorJugador = new ControladorJugador(conexion);
+    private SistemaDeGestionPadelTPI sistema;
+    public ControladorGeneral(SistemaDeGestionPadelTPI sistema) {
+        this.sistema=sistema;
+        this.controladorJugador = new ControladorJugador(sistema);
         //this.controladorUsuario = new ControladorUsuario(conexion);
-        this.controladorAdministrador = new ControladorAdministrador(conexion);
+        this.controladorAdministrador = new ControladorAdministrador(sistema);
     }
 
     public void ejecutarMenuGeneral() {

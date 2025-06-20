@@ -1,9 +1,8 @@
 package com.mycompany.sistemadegestionpadeltpi.Main;
-
 import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorGeneral;
-import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorAdministrador;
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
+import com.mycompany.sistemadegestionpadeltpi.DAO.PartidoDAO;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Partido;
@@ -18,14 +17,18 @@ public class SistemaDeGestionPadelTPI {
     private List<Partido> listaPartidos;
     public JugadorDAO jugadorDAO;
     public ParejaDAO parejaDAO;
+    public PartidoDAO partidoDAO;
     private Connection conexion;
 
+    // ✅ Constructor que inicializa la conexión y los DAO
     public SistemaDeGestionPadelTPI(Connection conexion) {
         this.conexion = conexion;
         this.jugadorDAO = new JugadorDAO(conexion);
         this.parejaDAO = new ParejaDAO(conexion);
+        this.partidoDAO = new PartidoDAO(conexion);
     }
 
+    // ✅ MÉTODO PRINCIPAL
     public static void main(String[] args) {
         try {
             // 1. Cargar el driver de MySQL
@@ -33,13 +36,13 @@ public class SistemaDeGestionPadelTPI {
 
             // 2. Conectarse a la base de datos
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "frodo1234"
+                "jdbc:mysql://localhost:3306/sistemapadel", "root", "popi2025"
             );
 
-            // 3. Crear instancia del sistema pasando la conexión
+            // 3. Crear instancia del sistema con conexión
             SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(con);
 
-            // 4. Cargar datos desde la base sin pasar Connection a métodos
+            // 4. Traer los datos desde la base
             sistema.traerJugadoresDesdeBD();
             sistema.traerParejasDesdeBD();
             sistema.traerPartidosDesdeBD();
@@ -61,7 +64,7 @@ public class SistemaDeGestionPadelTPI {
             }
 
             // 6. Ejecutar el menú general
-            ControladorGeneral controlador = new ControladorGeneral(con);
+            ControladorGeneral controlador = new ControladorGeneral(sistema);
             controlador.ejecutarMenuGeneral();
 
             // 7. Cerrar conexión
@@ -72,7 +75,31 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
-    // Ahora los métodos sin parámetro Connection
+    // Métodos para cargar datos desde la base
+    public void traerJugadoresDesdeBD() {
+        listaJugadores = new java.util.ArrayList<>();
+        try {
+            String sql = "SELECT * FROM jugador";
+            var stmt = conexion.createStatement();
+            var rs = stmt.executeQuery(sql);
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombreJugador");
+                String dni = rs.getString("dniJugador");
+                String telefono = rs.getString("telefonoJugador");
+
+                Jugador jugador = new Jugador(id, nombre, dni, telefono);
+                listaJugadores.add(jugador);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al traer jugadores: " + e.getMessage());
+        }
+    }
+    public Connection getConexion() {
+        return conexion;
+    }
     public void traerParejasDesdeBD() {
         listaParejas = new java.util.ArrayList<>();
         try {
@@ -96,29 +123,7 @@ public class SistemaDeGestionPadelTPI {
             System.out.println("Error al traer parejas: " + e.getMessage());
         }
     }
-
-    public void traerJugadoresDesdeBD() {
-        listaJugadores = new java.util.ArrayList<>();
-        try {
-            String sql = "SELECT * FROM jugador";
-            var stmt = conexion.createStatement();
-            var rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nombre = rs.getString("nombreJugador");
-                String dni = rs.getString("dniJugador");
-                String telefono = rs.getString("telefonoJugador");
-
-                Jugador jugador = new Jugador(id, nombre, dni, telefono);
-                listaJugadores.add(jugador);
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error al traer jugadores: " + e.getMessage());
-        }
-    }
-
+    
     public void traerPartidosDesdeBD() {
         listaPartidos = new java.util.ArrayList<>();
         try {
@@ -144,6 +149,7 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
+    // Getters necesarios
     public List<Jugador> getListaJugadores() {
         return listaJugadores;
     }
@@ -154,5 +160,17 @@ public class SistemaDeGestionPadelTPI {
 
     public List<Partido> getListaPartidos() {
         return listaPartidos;
+    }
+
+    public JugadorDAO getJugadorDAO() {
+        return jugadorDAO;
+    }
+
+    public ParejaDAO getParejaDAO() {
+        return parejaDAO;
+    }
+
+    public PartidoDAO getPartidoDAO() {
+        return partidoDAO;
     }
 }

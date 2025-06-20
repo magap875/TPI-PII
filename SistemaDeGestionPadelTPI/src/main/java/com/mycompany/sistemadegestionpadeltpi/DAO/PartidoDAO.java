@@ -1,5 +1,4 @@
 package com.mycompany.sistemadegestionpadeltpi.DAO;
-
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Partido;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import java.sql.*;

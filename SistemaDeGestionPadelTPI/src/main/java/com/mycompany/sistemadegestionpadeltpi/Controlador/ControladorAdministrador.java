@@ -1,13 +1,12 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
-
 import com.mycompany.sistemadegestionpadeltpi.DAO.GrupoDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.TorneoDAO;
+import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Grupo;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Torneo;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaAdministrador;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,15 +14,13 @@ import java.util.List;
 
 public class ControladorAdministrador {
 
-    private VistaAdministrador vistaAdministrador = new VistaAdministrador();
+    private final VistaAdministrador vistaAdministrador = new VistaAdministrador();
+    private final SistemaDeGestionPadelTPI sistema;
     private Connection conexion;
-    private List<Pareja> parejas;
-    private ParejaDAO parejaDAO;
 
-    public ControladorAdministrador(Connection conexion) {
-        this.conexion = conexion;
-        this.parejaDAO = new ParejaDAO(conexion);
-        this.parejas = parejaDAO.obtenerTodasLasParejas();
+    public ControladorAdministrador(SistemaDeGestionPadelTPI sistema) {
+        this.sistema = sistema;
+        this.conexion = sistema.getConexion();
     }
 
     public void ejecutarMenuAdministrador() {
@@ -41,11 +38,8 @@ public class ControladorAdministrador {
     }
 
     public void consultarPartidos() {}
-
     public void verResultados() {}
-
     public void verClasificacion() {}
-
     public void cargarResultado() {}
 
     public void crearTorneo() {
@@ -54,12 +48,8 @@ public class ControladorAdministrador {
             String categoria = vistaAdministrador.pedirDato("Categoría del torneo: ");
             int cuposDisponibles = Integer.parseInt(vistaAdministrador.pedirDato("Cantidad de parejas del torneo: "));
 
-            if (cuposDisponibles % 3 != 0) {
-                vistaAdministrador.mensaje("Error: La cantidad de parejas debe ser múltiplo de 3.");
-                return;
-            }
+            Torneo torneo = new Torneo(nombre, categoria, cuposDisponibles, this.conexion); // suponiendo que este constructor existe
 
-            Torneo torneo = new Torneo(nombre, categoria, cuposDisponibles);
             TorneoDAO torneoDAO = new TorneoDAO(conexion);
             torneoDAO.insertarTorneo(torneo);
 
@@ -69,7 +59,7 @@ public class ControladorAdministrador {
 
             for (int i = 0; i < cantidadGrupos; i++) {
                 char idGrupo = (char) ('A' + i);
-                Grupo grupo = new Grupo(String.valueOf(idGrupo), 0, 0, 0);
+                Grupo grupo = new Grupo(String.valueOf(idGrupo));
                 grupoDAO.insertarGrupo(grupo);
                 grupos.add(grupo);
             }
@@ -83,5 +73,4 @@ public class ControladorAdministrador {
         }
     }
 }
-
 
