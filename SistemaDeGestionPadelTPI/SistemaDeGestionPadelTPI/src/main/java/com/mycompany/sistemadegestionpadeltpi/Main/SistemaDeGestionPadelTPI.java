@@ -1,4 +1,5 @@
 package com.mycompany.sistemadegestionpadeltpi.Main;
+
 import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorGeneral;
 import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorAdministrador;
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
@@ -32,7 +33,7 @@ public class SistemaDeGestionPadelTPI {
 
             // 2. Conectarse a la base de datos
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "882626.Facu"
+                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "frodo1234"
             );
 
             // 3. Crear instancia del sistema pasando la conexión
@@ -72,7 +73,6 @@ public class SistemaDeGestionPadelTPI {
     }
 
     // Ahora los métodos sin parámetro Connection
-
     public void traerParejasDesdeBD() {
         listaParejas = new java.util.ArrayList<>();
         try {
@@ -156,4 +156,3 @@ public class SistemaDeGestionPadelTPI {
         return listaPartidos;
     }
 }
-
