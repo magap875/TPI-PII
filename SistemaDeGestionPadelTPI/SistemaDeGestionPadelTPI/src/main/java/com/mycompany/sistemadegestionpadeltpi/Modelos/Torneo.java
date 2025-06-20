@@ -11,12 +11,12 @@ public class Torneo {
     private Connection conexion;
     private List<Partido> playoffs;
     private int capacidadMaxima;
-    private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI();
+    private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(conexion);
     public Torneo(String nombre, String categoria, int capacidadMaxima) {
         this.nombre = nombre;
         this.categoria = categoria;
         this.capacidadMaxima = capacidadMaxima;
-        sistema.traerJugadoresDesdeBD(conexion);
+        sistema.traerJugadoresDesdeBD();
         this.parejasInscriptas = new ArrayList<>(sistema.getListaParejas());
         this.fixture = new ArrayList<>();
         this.playoffs = new ArrayList<>();

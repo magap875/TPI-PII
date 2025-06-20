@@ -6,7 +6,7 @@ import java.util.*;
 
 public class JugadorDAO {
 
-    public Connection conexion;
+    private Connection conexion;
 
     public JugadorDAO(Connection conexion) {
         this.conexion = conexion;
@@ -20,9 +20,8 @@ public class JugadorDAO {
             ps.setString(3, jugador.getTelefono());
             ps.executeUpdate();
         }
-    
     }
-    
+
     public Jugador buscarJugadorPorId(int id) throws SQLException {
         String sql = "SELECT * FROM jugador WHERE id = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -39,5 +38,27 @@ public class JugadorDAO {
             }
         }
         return null;
+    }
+
+    public List<Jugador> obtenerTodosLosJugadores() {
+        List<Jugador> lista = new ArrayList<>();
+        String sql = "SELECT * FROM jugador";
+        try (Statement stmt = conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombreJugador");
+                String dni = rs.getString("dniJugador");
+                String telefono = rs.getString("telefonoJugador");
+
+                lista.add(new Jugador(id, nombre, dni, telefono));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener jugadores: " + e.getMessage());
+        }
+
+        return lista;
     }
 }

@@ -4,8 +4,10 @@ com\mycompany\sistemadegestionpadeltpi\Vista\VistaAdministrador.class
 com\mycompany\sistemadegestionpadeltpi\Controlador\ControladorUsuario.class
 com\mycompany\sistemadegestionpadeltpi\Controlador\ControladorAdministrador.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Partido.class
+com\mycompany\sistemadegestionpadeltpi\DAO\TorneoDAO.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Estadistica.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Jugador.class
+com\mycompany\sistemadegestionpadeltpi\DAO\GrupoDAO.class
 com\mycompany\sistemadegestionpadeltpi\DAO\PartidoDAO.class
 com\mycompany\sistemadegestionpadeltpi\Controlador\ControladorGeneral.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Pareja.class
@@ -13,6 +15,7 @@ com\mycompany\sistemadegestionpadeltpi\Controlador\ControladorJugador.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Torneo.class
 com\mycompany\sistemadegestionpadeltpi\Vista\VistaJugador.class
 com\mycompany\sistemadegestionpadeltpi\Vista\VistaUsuario.class
+com\mycompany\sistemadegestionpadeltpi\DAO\EstadisticasDAO.class
 com\mycompany\sistemadegestionpadeltpi\DAO\ParejaDAO.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Administrador.class
 com\mycompany\sistemadegestionpadeltpi\Modelos\Grupo.class
