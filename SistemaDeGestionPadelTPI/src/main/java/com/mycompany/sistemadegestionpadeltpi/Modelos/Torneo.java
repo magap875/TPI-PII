@@ -1,20 +1,25 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
+import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
+import java.sql.Connection;
 import java.util.*;
 
 public class Torneo {
     private String nombre;
     private String categoria;
-    private String estado;
-    private List<Pareja> parejasInscriptas = new ArrayList<>();
-    private List<Grupo> fixture = new ArrayList<>();
-    private List<Partido> playoffs = new ArrayList<>();
+    private List<Pareja> parejasInscriptas;
+    private List<Grupo> fixture;
+    private Connection conexion;
+    private List<Partido> playoffs;
     private int capacidadMaxima;
-
-    public Torneo(String nombre, String categoria, String estado, int capacidadMaxima) {
+    private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(conexion);
+    public Torneo(String nombre, String categoria, int capacidadMaxima) {
         this.nombre = nombre;
         this.categoria = categoria;
-        this.estado = estado;
         this.capacidadMaxima = capacidadMaxima;
+        sistema.traerJugadoresDesdeBD();
+        this.parejasInscriptas = new ArrayList<>(sistema.getListaParejas());
+        this.fixture = new ArrayList<>();
+        this.playoffs = new ArrayList<>();
     }
 
     public String getNombre() {
@@ -32,15 +37,6 @@ public class Torneo {
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
     public List<Pareja> getParejasInscriptas() {
         return parejasInscriptas;
     }

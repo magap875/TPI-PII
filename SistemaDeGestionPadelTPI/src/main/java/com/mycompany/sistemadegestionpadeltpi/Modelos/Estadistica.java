@@ -2,23 +2,24 @@ package com.mycompany.sistemadegestionpadeltpi.Modelos;
 
 public class Estadistica {
 
-    private Pareja pareja;
+    private int idPareja;
     private int partidosJugados;
     private int partidosGanados;
     private int partidosPerdidos;
 
-    public Estadistica(Pareja pareja, int partidosJugados, int partidosGanados, int partidosPerdidos) {
-        this.pareja = pareja;
+    public Estadistica(int idPareja, int partidosJugados, int partidosGanados, int partidosPerdidos) {
+        this.idPareja = idPareja;
         this.partidosJugados = partidosJugados;
         this.partidosGanados = partidosGanados;
         this.partidosPerdidos = partidosPerdidos;
     }
-    public Pareja getPareja() {
-        return pareja;
+
+    public int getIdPareja() {
+        return idPareja;
     }
 
-    public void setPareja(Pareja pareja) {
-        this.pareja = pareja;
+    public void setIdPareja(int idPareja) {
+        this.idPareja = idPareja;
     }
 
     public int getPartidosJugados() {

@@ -8,13 +8,24 @@ public class Partido {
     private Pareja pareja1;
     private Pareja pareja2;
     private String resultado;
+    private String idGrupo;
 
-    public Partido(int idPartido, Pareja pareja1, Pareja pareja2, String resultado) {
+    public Partido(int idPartido, Pareja pareja1, Pareja pareja2, String resultado, String idGrupo) {
         this.idPartido = idPartido;
         this.pareja1 = pareja1;
         this.pareja2 = pareja2;
         this.resultado = resultado;
+        this.idGrupo = idGrupo;
     }
+
+    public String getIdGrupo() {
+        return idGrupo;
+    }
+
+    public void setIdGrupo(String idGrupo) {
+        this.idGrupo = idGrupo;
+    }
+    
 
     public Partido() {
     }

@@ -3,12 +3,23 @@ public class Pareja {
     private int idPareja;
     private Jugador jugador1;
     private Jugador jugador2;
+    private String idGrupo;
 
-    public Pareja(int idPareja, Jugador jugador1, Jugador jugador2) {
+    public Pareja(int idPareja, Jugador jugador1, Jugador jugador2, String idGrupo) {
         this.idPareja = idPareja;
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
+        this.idGrupo = idGrupo;
     }
+
+    public String getIdGrupo() {
+        return idGrupo;
+    }
+
+    public void setIdGrupo(String idGrupo) {
+        this.idGrupo = idGrupo;
+    }
+    
     public Pareja() {
     }
     

@@ -13,7 +13,7 @@ public class ControladorGeneral {
     public ControladorGeneral(Connection conexion) {
         this.controladorJugador = new ControladorJugador(conexion);
         //this.controladorUsuario = new ControladorUsuario(conexion);
-        //this.controladorAdministrador = new ControladorAdministrador(conexion);
+        this.controladorAdministrador = new ControladorAdministrador(conexion);
     }
 
     public void ejecutarMenuGeneral() {

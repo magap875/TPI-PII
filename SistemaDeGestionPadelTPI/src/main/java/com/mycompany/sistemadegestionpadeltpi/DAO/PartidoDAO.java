@@ -1,4 +1,5 @@
 package com.mycompany.sistemadegestionpadeltpi.DAO;
+
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Partido;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import java.sql.*;
@@ -13,6 +14,7 @@ public class PartidoDAO {
         this.conexion = conexion;
     }
 
+    // metodo para cargar partidos a la bbdd
     public void insertarPartido(Partido partido) throws SQLException {
         String sql = "INSERT INTO Partido (idPareja1, idPareja2, resultado) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -27,7 +29,5 @@ public class PartidoDAO {
                 }
             }
         }
-    }   
+    }
 }
-
-

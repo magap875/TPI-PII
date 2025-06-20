@@ -1,35 +1,36 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
 
+import com.mycompany.sistemadegestionpadeltpi.DAO.GrupoDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
+import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaJugador;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
-import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
+import java.util.Random;
 
 public class ControladorJugador {
 
-    private VistaJugador vistaJugador = new VistaJugador();
-    private VistaGeneral vistaGeneral = new VistaGeneral();
+    private VistaJugador vistaJugador;
+    private VistaGeneral vistaGeneral;
     private Connection conexion;
     private List<Jugador> listaJugadores;
     private JugadorDAO jugadorDAO;
-    private Scanner s = new Scanner(System.in);
     private ParejaDAO parejaDAO;
-    private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI();
+    private GrupoDAO grupoDAO;
 
     public ControladorJugador(Connection conexion) {
         this.conexion = conexion;
+        this.vistaJugador = new VistaJugador();
+        this.vistaGeneral = new VistaGeneral();
         this.jugadorDAO = new JugadorDAO(conexion);
         this.parejaDAO = new ParejaDAO(conexion);
-        this.vistaJugador = new VistaJugador();
-        sistema.traerJugadoresDesdeBD(conexion);
-        this.listaJugadores = new ArrayList<>(sistema.getListaJugadores());
+        this.grupoDAO = new GrupoDAO(conexion);
+        this.listaJugadores = jugadorDAO.obtenerTodosLosJugadores();
     }
 
     public void ejecutarMenuJugador() {
@@ -37,17 +38,11 @@ public class ControladorJugador {
         do {
             opcion = vistaJugador.mostrarMenuJugador();
             switch (opcion) {
-                case 1 ->
-                    registrarJugador();
-                case 2 ->
-                    consultarPartidos();
-                case 3 ->
-                    verResultados();
-                case 4 ->
-                    verClasificacion();
-                case 5 ->
-                    inscribirseATorneo();
-
+                case 1 -> registrarJugador();
+                case 2 -> consultarPartidos();
+                case 3 -> verResultados();
+                case 4 -> verClasificacion();
+                case 5 -> inscribirseATorneo();
             }
         } while (opcion != 0);
     }
@@ -60,9 +55,11 @@ public class ControladorJugador {
             String telefono = vistaJugador.pedirDato("Ingrese su telefono: ");
 
             Jugador jugador = new Jugador(id, nombre, dni, telefono);
-            JugadorDAO dao = new JugadorDAO(conexion);
-            dao.insertarJugador(jugador);
+            jugadorDAO.insertarJugador(jugador);
             vistaJugador.mensaje("Registro exitoso.");
+
+            // Refrescar lista
+            this.listaJugadores = jugadorDAO.obtenerTodosLosJugadores();
 
         } catch (Exception e) {
             vistaJugador.mensaje("Error al registrar: " + e.getMessage());
@@ -70,48 +67,58 @@ public class ControladorJugador {
     }
 
     public void consultarPartidos() {
-
+        // A implementar
     }
 
     public void verResultados() {
-
+        // A implementar
     }
 
     public void verClasificacion() {
-
+        // A implementar
     }
 
-   public void inscribirseATorneo() {
-    vistaJugador.mensaje("*** Registre la pareja ***");
+    public void inscribirseATorneo() {
+        vistaJugador.mensaje("*** Registre la pareja ***");
 
-    try {
-        int idPareja = Integer.parseInt(vistaJugador.pedirDato("ID de la pareja: "));
-        int idIntegrante1 = Integer.parseInt(vistaJugador.pedirDato("ID del primer jugador: "));
-        int idIntegrante2 = Integer.parseInt(vistaJugador.pedirDato("ID del segundo jugador: "));
+        try {
+            int idPareja = Integer.parseInt(vistaJugador.pedirDato("ID de la pareja: "));
+            int idIntegrante1 = Integer.parseInt(vistaJugador.pedirDato("ID del primer jugador: "));
+            int idIntegrante2 = Integer.parseInt(vistaJugador.pedirDato("ID del segundo jugador: "));
 
-        Jugador jugador1 = null;
-        Jugador jugador2 = null;
-
-        for (Jugador j : listaJugadores) {
-            if (j.getId() == idIntegrante1) {
-                jugador1 = j;
-            } else if (j.getId() == idIntegrante2) {
-                jugador2 = j;
+            if (idIntegrante1 == idIntegrante2) {
+                vistaJugador.mensaje("Los jugadores deben ser distintos.");
+                return;
             }
-        }
 
-        if (jugador1 != null && jugador2 != null) {
-            Pareja pareja = new Pareja(idPareja, jugador1, jugador2);
-            ParejaDAO dao = new ParejaDAO(conexion);
-            dao.insertarPareja(pareja);
-            vistaJugador.mensaje("Registro exitoso.");
-        } else {
-            vistaJugador.mensaje("Uno o ambos jugadores no existen.");
-        }
+            Jugador jugador1 = null;
+            Jugador jugador2 = null;
 
-    } catch (Exception e) {
-        vistaJugador.mensaje("Error al registrar: " + e.getMessage());
+            for (Jugador j : listaJugadores) {
+                if (j.getId() == idIntegrante1) jugador1 = j;
+                if (j.getId() == idIntegrante2) jugador2 = j;
+            }
+
+            if (jugador1 != null && jugador2 != null) {
+                List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
+
+                if (idsGrupo.isEmpty()) {
+                    vistaJugador.mensaje("No hay grupos disponibles.");
+                    return;
+                }
+
+                String idGrupoAleatorio = idsGrupo.get(new Random().nextInt(idsGrupo.size()));
+                Pareja pareja = new Pareja(idPareja, jugador1, jugador2, idGrupoAleatorio);
+
+                parejaDAO.insertarPareja(pareja, grupoDAO);
+
+                vistaJugador.mensaje("Registro exitoso en el grupo " + idGrupoAleatorio + ".");
+            } else {
+                vistaJugador.mensaje("Uno o ambos jugadores no existen.");
+            }
+
+        } catch (Exception e) {
+            vistaJugador.mensaje("Error al registrar: " + e.getMessage());
+        }
     }
-}
-
 }

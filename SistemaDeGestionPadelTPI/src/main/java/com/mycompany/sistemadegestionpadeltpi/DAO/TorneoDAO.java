@@ -11,7 +11,7 @@ public class TorneoDAO {
         this.conexion = conexion;
     }
 
-    // Método para insertar un torneo en la base de datos
+    // metodo para cargar el torneo a la bbdd
     public void insertarTorneo(Torneo torneo) throws SQLException {
         String sql = "INSERT INTO torneo (nombre, categoria, capacidad_maxima) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -22,7 +22,7 @@ public class TorneoDAO {
         }
     }
 
-    // Método para buscar un torneo por su ID
+    // metodo para facilitar la busqueda de un torneo por id
     public Torneo buscarTorneoPorId(int id) throws SQLException {
         String sql = "SELECT * FROM torneo WHERE id = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -30,9 +30,9 @@ public class TorneoDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return new Torneo(
-                        rs.getString("nombre"),
-                        rs.getString("categoria"),
-                        rs.getInt("capacidad_maxima")
+                            rs.getString("nombre"),
+                            rs.getString("categoria"),
+                            rs.getInt("capacidad_maxima")
                     );
                 }
             }

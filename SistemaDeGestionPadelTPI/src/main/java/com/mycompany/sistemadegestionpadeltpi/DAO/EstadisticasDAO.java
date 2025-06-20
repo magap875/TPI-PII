@@ -11,7 +11,7 @@ public class EstadisticasDAO {
         this.conexion = conexion;
     }
 
-    // Método para insertar una estadística en la base de datos
+    // metodo para insertar una estadística en la bbdd
     public void insertarEstadistica(Estadistica estadistica) throws SQLException {
         String sql = "INSERT INTO estadistica (idPareja, partidosJugados, partidosGanados, partidosPerdidos) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -23,7 +23,7 @@ public class EstadisticasDAO {
         }
     }
 
-    // Método para buscar una estadística por idPareja
+    // metodo para buscar una estadística por idPareja
     public Estadistica buscarEstadisticaPorIdPareja(int idPareja) throws SQLException {
         String sql = "SELECT * FROM estadistica WHERE idPareja = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -31,10 +31,10 @@ public class EstadisticasDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return new Estadistica(
-                        rs.getInt("idPareja"),
-                        rs.getInt("partidosJugados"),
-                        rs.getInt("partidosGanados"),
-                        rs.getInt("partidosPerdidos")
+                            rs.getInt("idPareja"),
+                            rs.getInt("partidosJugados"),
+                            rs.getInt("partidosGanados"),
+                            rs.getInt("partidosPerdidos")
                     );
                 }
             }
@@ -42,4 +42,3 @@ public class EstadisticasDAO {
         return null;
     }
 }
-
