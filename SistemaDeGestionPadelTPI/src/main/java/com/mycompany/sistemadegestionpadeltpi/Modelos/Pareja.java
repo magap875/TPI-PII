@@ -1,6 +1,9 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
+
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
+
 public class Pareja {
+
     private int idPareja;
     private Jugador jugador1;
     private Jugador jugador2;
@@ -20,10 +23,10 @@ public class Pareja {
     public void setIdGrupo(String idGrupo) {
         this.idGrupo = idGrupo;
     }
-    
+
     public Pareja() {
     }
-    
+
     public int getIdPareja() {
         return idPareja;
     }
@@ -46,18 +49,16 @@ public class Pareja {
 
     public void setJugador2(Jugador jugador2) {
         this.jugador2 = jugador2;
-    }  
+    }
 
-@Override
-public String toString() {
-    return "Pareja{"
-            + "idPareja=" + idPareja
-            + ", jugador1='" + jugador1.getNombre() + '\''
-            + ", jugador2='" + jugador2.getNombre() + '\''
-            + ", idGrupo='" + idGrupo + '\''
-            + '}';
-}
+    @Override
+    public String toString() {
+        return "Pareja{"
+                + "idPareja=" + idPareja
+                + ", jugador1='" + jugador1.getNombre() + '\''
+                + ", jugador2='" + jugador2.getNombre() + '\''
+                + ", idGrupo='" + idGrupo + '\''
+                + '}';
+    }
 
-
-    
 }

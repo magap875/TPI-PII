@@ -1,6 +1,5 @@
 package com.mycompany.sistemadegestionpadeltpi.DAO;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Grupo;
-import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import java.sql.*;
 import java.util.*;
 
@@ -12,7 +11,7 @@ public class GrupoDAO {
         this.conexion = conexion;
     }
 
-    // metodo para cargar grupos a la bbdd
+    // cargar grupos a la bbdd
     public void insertarGrupo(Grupo grupo) throws SQLException {
         String sql = "INSERT INTO grupo (idGrupo) VALUES (?)";
 
@@ -21,7 +20,8 @@ public class GrupoDAO {
             ps.executeUpdate();
         }
     }
-
+    
+    // obtenemos los id de grupo
     public List<String> obtenerTodosLosIdGrupo() throws SQLException {
         List<String> ids = new ArrayList<>();
         String sql = "SELECT idGrupo FROM Grupo";
@@ -32,7 +32,8 @@ public class GrupoDAO {
         }
         return ids;
     }
-
+    
+    // buscamos grupos por id
     public Grupo buscarGrupoPorId(String idGrupo) throws SQLException {
         String sql = "SELECT * FROM grupo WHERE idGrupo = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {

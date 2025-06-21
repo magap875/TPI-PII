@@ -1,13 +1,11 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
+
 import com.mycompany.sistemadegestionpadeltpi.DAO.GrupoDAO;
-import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
-import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaJugador;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Random;
 
@@ -17,10 +15,9 @@ public class ControladorJugador {
     private final VistaGeneral vistaGeneral = new VistaGeneral();
     private final SistemaDeGestionPadelTPI sistema;
 
-
     public ControladorJugador(SistemaDeGestionPadelTPI sistema) {
         this.sistema = sistema;
-        
+
     }
 
     public void ejecutarMenuJugador() {
@@ -28,15 +25,21 @@ public class ControladorJugador {
         do {
             opcion = vistaJugador.mostrarMenuJugador();
             switch (opcion) {
-                case 1 -> registrarJugador();
-                case 2 -> consultarPartidos();
-                case 3 -> verResultados();
-                case 4 -> verClasificacion();
-                case 5 -> inscribirseATorneo();
+                case 1 ->
+                    registrarJugador();
+                case 2 ->
+                    consultarPartidos();
+                case 3 ->
+                    verResultados();
+                case 4 ->
+                    verClasificacion();
+                case 5 ->
+                    inscribirseATorneo();
             }
         } while (opcion != 0);
     }
-
+    
+    // registramos un jugador
     public void registrarJugador() {
         try {
             int id = Integer.parseInt(vistaJugador.pedirDato("Ingrese su id: "));
@@ -55,15 +58,20 @@ public class ControladorJugador {
         }
     }
 
-    public void consultarPartidos() {}
-    public void verResultados() {}
-    public void verClasificacion() {}
+    public void consultarPartidos() {
+    }
 
+    public void verResultados() {
+    }
+
+    public void verClasificacion() {
+    }
+
+    // metodo para inscribirse a un torneo, que incluye el registro de la pareja
     public void inscribirseATorneo() {
         vistaJugador.mensaje("*** Registre la pareja ***");
 
         try {
-            int idPareja = Integer.parseInt(vistaJugador.pedirDato("ID de la pareja: "));
             int idIntegrante1 = Integer.parseInt(vistaJugador.pedirDato("ID del primer jugador: "));
             int idIntegrante2 = Integer.parseInt(vistaJugador.pedirDato("ID del segundo jugador: "));
 
@@ -76,8 +84,12 @@ public class ControladorJugador {
             Jugador jugador1 = null, jugador2 = null;
 
             for (Jugador j : jugadores) {
-                if (j.getId() == idIntegrante1) jugador1 = j;
-                if (j.getId() == idIntegrante2) jugador2 = j;
+                if (j.getId() == idIntegrante1) {
+                    jugador1 = j;
+                }
+                if (j.getId() == idIntegrante2) {
+                    jugador2 = j;
+                }
             }
 
             if (jugador1 != null && jugador2 != null) {
@@ -90,12 +102,12 @@ public class ControladorJugador {
                 }
 
                 String idGrupoAleatorio = idsGrupo.get(new Random().nextInt(idsGrupo.size()));
-                Pareja pareja = new Pareja(idPareja, jugador1, jugador2, idGrupoAleatorio);
+                Pareja pareja = new Pareja(0, jugador1, jugador2, idGrupoAleatorio);
 
                 sistema.getParejaDAO().insertarPareja(pareja, grupoDAO);
                 vistaJugador.mensaje("Registro exitoso en el grupo " + idGrupoAleatorio + ".");
 
-                sistema.traerParejasDesdeBD(); // actualizar lista
+                sistema.traerParejasDesdeBD();
 
             } else {
                 vistaJugador.mensaje("Uno o ambos jugadores no existen.");

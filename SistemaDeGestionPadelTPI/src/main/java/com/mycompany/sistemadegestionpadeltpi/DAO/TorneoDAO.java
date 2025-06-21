@@ -1,6 +1,8 @@
 package com.mycompany.sistemadegestionpadeltpi.DAO;
+
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Torneo;
 import java.sql.*;
+
 public class TorneoDAO {
 
     public Connection conexion;
@@ -9,7 +11,7 @@ public class TorneoDAO {
         this.conexion = conexion;
     }
 
-    // metodo para cargar el torneo a la bbdd
+    // cargar el torneo a la bbdd
     public void insertarTorneo(Torneo torneo) throws SQLException {
         String sql = "INSERT INTO torneo (nombre, categoria, capacidad_maxima) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -20,22 +22,22 @@ public class TorneoDAO {
         }
     }
 
-    // metodo para facilitar la busqueda de un torneo por id
- public Torneo buscarTorneoPorId(int id) throws SQLException {
-    String sql = "SELECT * FROM torneo WHERE id = ?";
-    try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-        ps.setInt(1, id);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return new Torneo(
-                    rs.getString("nombre"),
-                    rs.getString("categoria"),
-                    rs.getInt("capacidad_maxima"),
-                    this.conexion
-                );
+    // facilitar la busqueda de un torneo por id
+    public Torneo buscarTorneoPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM torneo WHERE id = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Torneo(
+                            rs.getString("nombre"),
+                            rs.getString("categoria"),
+                            rs.getInt("capacidad_maxima"),
+                            this.conexion
+                    );
+                }
             }
         }
+        return null;
     }
-    return null;
-}
 }

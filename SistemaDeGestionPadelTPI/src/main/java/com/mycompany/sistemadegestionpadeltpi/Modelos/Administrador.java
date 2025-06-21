@@ -1,6 +1,6 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
 
-public class Administrador extends Usuario{
+public class Administrador extends Usuario {
 
     public Administrador(int id, String nombre) {
         super(id, nombre);
@@ -21,6 +21,5 @@ public class Administrador extends Usuario{
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-   
-    
+
 }

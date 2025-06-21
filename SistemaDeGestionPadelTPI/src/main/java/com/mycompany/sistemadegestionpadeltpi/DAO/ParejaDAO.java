@@ -1,6 +1,5 @@
 package com.mycompany.sistemadegestionpadeltpi.DAO;
-import com.mycompany.sistemadegestionpadeltpi.DAO.GrupoDAO;
-import com.mycompany.sistemadegestionpadeltpi.Modelos.Grupo;
+
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import java.sql.*;
@@ -15,49 +14,61 @@ public class ParejaDAO {
         this.conexion = conexion;
     }
 
-    // metodo para cargar parejas a la BBDD
-  public void insertarPareja(Pareja pareja, GrupoDAO grupoDAO) throws SQLException {
-    // Paso 1: buscar grupo con menos de 3 parejas
-    String grupoDisponible = buscarGrupoConEspacio(grupoDAO);
+    public void insertarPareja(Pareja pareja, GrupoDAO grupoDAO) throws SQLException {
+        String grupoDisponible = buscarGrupoConEspacio(grupoDAO);
+        if (grupoDisponible == null) {
+            throw new SQLException("No hay grupos disponibles con espacio.");
+        }
+        pareja.setIdGrupo(grupoDisponible);
 
-    if (grupoDisponible == null) {
-        throw new SQLException("No hay grupos disponibles con espacio.");
-    }
+        String sql = "INSERT INTO pareja (idJugador1, idJugador2, idGrupo) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, pareja.getJugador1().getId());
+            ps.setInt(2, pareja.getJugador2().getId());
+            ps.setString(3, pareja.getIdGrupo());
+            ps.executeUpdate();
 
-    // Asignar grupo a la pareja
-    pareja.setIdGrupo(grupoDisponible);
-
-    // Paso 2: insertar pareja en la base
-    String sql = "INSERT INTO pareja (idPareja, idJugador1, idJugador2, idGrupo) VALUES (?, ?, ?, ?)";
-    try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-        ps.setInt(1, pareja.getIdPareja());
-        ps.setInt(2, pareja.getJugador1().getId());
-        ps.setInt(3, pareja.getJugador2().getId());
-        ps.setString(4, pareja.getIdGrupo());
-        ps.executeUpdate();
-    }
-}
-    private String buscarGrupoConEspacio(GrupoDAO grupoDAO) throws SQLException {
-    List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
-
-    for (String idGrupo : idsGrupo) {
-        // Contar cuántas parejas hay en ese grupo
-        String sql = "SELECT COUNT(*) AS cantidad FROM pareja WHERE idGrupo = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-            ps.setString(1, idGrupo);
-            try (ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    int cantidad = rs.getInt("cantidad");
-                    if (cantidad < 3) {
-                        return idGrupo; // Este grupo tiene lugar
-                    }
+                    int idGenerado = rs.getInt(1);
+                    pareja.setIdPareja(idGenerado);
+
+                    System.out.println("Insertando estadistica para pareja: " + idGenerado);
+
+                    // insertamos estadistica con el ID correcto
+                    EstadisticaDAO estadisticaDAO = new EstadisticaDAO(conexion);
+                    estadisticaDAO.insertarEstadisticaInicial(idGenerado);
+                } else {
+                    throw new SQLException("No se pudo obtener el ID generado para la pareja.");
                 }
             }
         }
     }
 
-    return null; // No hay grupos con espacio
-} 
+    // metodo para buscar grupos con espacio
+    private String buscarGrupoConEspacio(GrupoDAO grupoDAO) throws SQLException {
+        List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
+
+        for (String idGrupo : idsGrupo) {
+            // contamos parejas por grupo
+            String sql = "SELECT COUNT(*) AS cantidad FROM pareja WHERE idGrupo = ?";
+            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+                ps.setString(1, idGrupo);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        int cantidad = rs.getInt("cantidad");
+                        if (cantidad < 3) {
+                            return idGrupo;
+                        }
+                    }
+                }
+            }
+        }
+
+        return null; // no habria grupos con espacio
+    }
+
+    // buscamos parejas por id
     public Pareja buscarParejaPorId(int idPareja) throws SQLException {
         String sql = "SELECT * FROM pareja WHERE idPareja = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -75,6 +86,7 @@ public class ParejaDAO {
         return null;
     }
 
+    // lista de parejas
     public List<Pareja> obtenerTodasLasParejas() {
         List<Pareja> lista = new ArrayList<>();
         String sql = "SELECT * FROM pareja";

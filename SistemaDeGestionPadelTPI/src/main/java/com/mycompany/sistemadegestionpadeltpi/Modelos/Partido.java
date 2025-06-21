@@ -1,7 +1,5 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
 
-import java.util.*;
-
 public class Partido {
 
     private int idPartido;
@@ -25,7 +23,6 @@ public class Partido {
     public void setIdGrupo(String idGrupo) {
         this.idGrupo = idGrupo;
     }
-    
 
     public Partido() {
     }
@@ -53,6 +50,7 @@ public class Partido {
     public void setPareja2(Pareja pareja2) {
         this.pareja2 = pareja2;
     }
+
     public String getResultado() {
         return resultado;
     }
@@ -61,5 +59,15 @@ public class Partido {
         this.resultado = resultado;
     }
 
+    @Override
+    public String toString() {
+        return "Partido{"
+                + "idPartido=" + getIdPartido()
+                + ", pareja1=" + pareja1
+                + ", pareja2=" + pareja2
+                + ", resultado='" + resultado + '\''
+                + ", idGrupo='" + idGrupo + '\''
+                + '}';
+    }
 
 }

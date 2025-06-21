@@ -1,5 +1,7 @@
 package com.mycompany.sistemadegestionpadeltpi.Main;
+
 import com.mycompany.sistemadegestionpadeltpi.Controlador.ControladorGeneral;
+import com.mycompany.sistemadegestionpadeltpi.DAO.EstadisticaDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.JugadorDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.PartidoDAO;
@@ -18,36 +20,34 @@ public class SistemaDeGestionPadelTPI {
     public JugadorDAO jugadorDAO;
     public ParejaDAO parejaDAO;
     public PartidoDAO partidoDAO;
+    public EstadisticaDAO estadisticaDAO;
     private Connection conexion;
 
-    // ✅ Constructor que inicializa la conexión y los DAO
+    // inicializamos la conexión y los DAO
     public SistemaDeGestionPadelTPI(Connection conexion) {
         this.conexion = conexion;
         this.jugadorDAO = new JugadorDAO(conexion);
         this.parejaDAO = new ParejaDAO(conexion);
         this.partidoDAO = new PartidoDAO(conexion);
+        this.estadisticaDAO = new EstadisticaDAO(conexion);
     }
 
-    // ✅ MÉTODO PRINCIPAL
     public static void main(String[] args) {
         try {
-            // 1. Cargar el driver de MySQL
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // 2. Conectarse a la base de datos
             Connection con = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/sistemapadel", "root", "popi2025"
+                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "frodo1234"
             );
 
-            // 3. Crear instancia del sistema con conexión
             SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(con);
 
-            // 4. Traer los datos desde la base
+            // traemos los datos de la bbdd
             sistema.traerJugadoresDesdeBD();
             sistema.traerParejasDesdeBD();
             sistema.traerPartidosDesdeBD();
 
-            // 5. Mostrar los datos cargados
+            // printeamos para verificar que todo salio bien
             System.out.println("=== LISTA DE JUGADORES ===");
             for (Jugador j : sistema.getListaJugadores()) {
                 System.out.println(j);
@@ -63,11 +63,10 @@ public class SistemaDeGestionPadelTPI {
                 System.out.println(p);
             }
 
-            // 6. Ejecutar el menú general
+            // ejecucion del menu general
             ControladorGeneral controlador = new ControladorGeneral(sistema);
             controlador.ejecutarMenuGeneral();
 
-            // 7. Cerrar conexión
             con.close();
 
         } catch (Exception e) {
@@ -75,7 +74,6 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
-    // Métodos para cargar datos desde la base
     public void traerJugadoresDesdeBD() {
         listaJugadores = new java.util.ArrayList<>();
         try {
@@ -97,9 +95,7 @@ public class SistemaDeGestionPadelTPI {
             System.out.println("Error al traer jugadores: " + e.getMessage());
         }
     }
-    public Connection getConexion() {
-        return conexion;
-    }
+
     public void traerParejasDesdeBD() {
         listaParejas = new java.util.ArrayList<>();
         try {
@@ -123,7 +119,7 @@ public class SistemaDeGestionPadelTPI {
             System.out.println("Error al traer parejas: " + e.getMessage());
         }
     }
-    
+
     public void traerPartidosDesdeBD() {
         listaPartidos = new java.util.ArrayList<>();
         try {
@@ -149,7 +145,11 @@ public class SistemaDeGestionPadelTPI {
         }
     }
 
-    // Getters necesarios
+    // metodos varios de ayuda
+    public Connection getConexion() {
+        return conexion;
+    }
+
     public List<Jugador> getListaJugadores() {
         return listaJugadores;
     }
@@ -172,5 +172,13 @@ public class SistemaDeGestionPadelTPI {
 
     public PartidoDAO getPartidoDAO() {
         return partidoDAO;
+    }
+
+    public EstadisticaDAO getEstadisticaDAO() {
+        return estadisticaDAO;
+    }
+
+    public void setEstadisticaDAO(EstadisticaDAO estadisticaDAO) {
+        this.estadisticaDAO = estadisticaDAO;
     }
 }

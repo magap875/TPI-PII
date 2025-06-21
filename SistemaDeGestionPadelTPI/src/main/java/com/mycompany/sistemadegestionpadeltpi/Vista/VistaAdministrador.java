@@ -15,6 +15,7 @@ public class VistaAdministrador {
         System.out.println("3. Ver clasificacion.");
         System.out.println("4. Crear torneo.");
         System.out.println("5. Cargar resultado.");
+        System.out.println("6. Generar partidos por grupo.");
         System.out.println("0. Salir.");
         System.out.print("Ingrese su opcion: ");
         opcion = Integer.parseInt(s.nextLine());

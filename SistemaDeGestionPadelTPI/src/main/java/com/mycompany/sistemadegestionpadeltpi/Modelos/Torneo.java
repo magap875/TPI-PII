@@ -1,9 +1,11 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
+
 import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
 import java.sql.Connection;
 import java.util.*;
 
 public class Torneo {
+
     private String nombre;
     private String categoria;
     private List<Pareja> parejasInscriptas;
@@ -12,18 +14,19 @@ public class Torneo {
     private List<Partido> playoffs;
     private int capacidadMaxima;
     private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(conexion);
-   public Torneo(String nombre, String categoria, int capacidadMaxima, Connection conexion) {
-    this.nombre = nombre;
-    this.categoria = categoria;
-    this.capacidadMaxima = capacidadMaxima;
-    this.conexion = conexion;
 
-    this.sistema = new SistemaDeGestionPadelTPI(conexion); // ahora sí
-    sistema.traerJugadoresDesdeBD();
-    this.parejasInscriptas=new ArrayList<>();
-    this.fixture = new ArrayList<>();
-    this.playoffs = new ArrayList<>();
-}
+    public Torneo(String nombre, String categoria, int capacidadMaxima, Connection conexion) {
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.capacidadMaxima = capacidadMaxima;
+        this.conexion = conexion;
+
+        this.sistema = new SistemaDeGestionPadelTPI(conexion); // ahora sí
+        sistema.traerJugadoresDesdeBD();
+        this.parejasInscriptas = new ArrayList<>();
+        this.fixture = new ArrayList<>();
+        this.playoffs = new ArrayList<>();
+    }
 
     public String getNombre() {
         return nombre;
@@ -40,6 +43,7 @@ public class Torneo {
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
+
     public List<Pareja> getParejasInscriptas() {
         return parejasInscriptas;
     }

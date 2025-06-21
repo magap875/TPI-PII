@@ -1,7 +1,8 @@
 package com.mycompany.sistemadegestionpadeltpi.Modelos;
 
 public abstract class Usuario {
-    protected int id; 
+
+    protected int id;
     protected String nombre;
 
     public Usuario(int id, String nombre) {
@@ -24,5 +25,5 @@ public abstract class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-        
+
 }

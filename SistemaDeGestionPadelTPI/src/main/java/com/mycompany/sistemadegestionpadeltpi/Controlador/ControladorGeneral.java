@@ -1,7 +1,8 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
+
 import com.mycompany.sistemadegestionpadeltpi.Main.SistemaDeGestionPadelTPI;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
-import java.sql.Connection;
+
 public class ControladorGeneral {
 
     private VistaGeneral vistaGeneral = new VistaGeneral();
@@ -9,8 +10,9 @@ public class ControladorGeneral {
     private ControladorUsuario controladorUsuario;
     private ControladorAdministrador controladorAdministrador;
     private SistemaDeGestionPadelTPI sistema;
+
     public ControladorGeneral(SistemaDeGestionPadelTPI sistema) {
-        this.sistema=sistema;
+        this.sistema = sistema;
         this.controladorJugador = new ControladorJugador(sistema);
         //this.controladorUsuario = new ControladorUsuario(conexion);
         this.controladorAdministrador = new ControladorAdministrador(sistema);

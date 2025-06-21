@@ -12,6 +12,7 @@ public class JugadorDAO {
         this.conexion = conexion;
     }
 
+    // insertamos jugadores en la bbdd
     public void insertarJugador(Jugador jugador) throws SQLException {
         String sql = "INSERT INTO Jugador (nombreJugador, dniJugador, telefonoJugador) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -22,6 +23,7 @@ public class JugadorDAO {
         }
     }
 
+    // buscamos por id
     public Jugador buscarJugadorPorId(int id) throws SQLException {
         String sql = "SELECT * FROM jugador WHERE id = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -40,6 +42,7 @@ public class JugadorDAO {
         return null;
     }
 
+    // obtenemos una lista de jugadores
     public List<Jugador> obtenerTodosLosJugadores() {
         List<Jugador> lista = new ArrayList<>();
         String sql = "SELECT * FROM jugador";
