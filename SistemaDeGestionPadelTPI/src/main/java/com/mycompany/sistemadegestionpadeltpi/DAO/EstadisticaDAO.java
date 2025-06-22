@@ -88,6 +88,33 @@ public class EstadisticaDAO {
             psPerdedor.executeUpdate();
         }
     }
+    // En EstadisticaDAO.java
+public List<Estadistica> obtenerEstadisticasPorGrupoYTorneo(String idGrupo, int idTorneo) throws SQLException {
+    List<Estadistica> ranking = new ArrayList<>();
+    String sql = 
+        "SELECT e.idPareja, e.partidosJugados, e.partidosGanados, e.partidosPerdidos " +
+        "FROM estadistica e " +
+        "JOIN pareja p ON e.idPareja = p.idPareja " +
+        "WHERE p.idGrupo = ? AND p.idTorneo = ? " +
+        "ORDER BY e.partidosGanados DESC, (e.partidosJugados - e.partidosGanados) DESC";
+
+    try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        ps.setString(1, idGrupo);
+        ps.setInt(2, idTorneo);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                int idPareja       = rs.getInt("idPareja");
+                int jugados        = rs.getInt("partidosJugados");
+                int ganados        = rs.getInt("partidosGanados");
+                int perdidos       = rs.getInt("partidosPerdidos");
+                ranking.add(new Estadistica(idPareja, jugados, ganados, perdidos));
+            }
+        }
+    }
+
+    return ranking;
+}
 
     // creamos una estadistica inicial a la pareja
     public void insertarEstadisticaInicial(int idPareja) throws SQLException {

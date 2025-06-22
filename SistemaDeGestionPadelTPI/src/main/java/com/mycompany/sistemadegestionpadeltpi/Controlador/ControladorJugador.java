@@ -33,10 +33,8 @@ public class ControladorJugador {
                 case 2 ->
                     inscribirseATorneo();
                 case 3 ->
-                    consultarPartidosPropios();
-                case 4 ->
                     consultarPartidosDelTorneo();
-                case 5 ->
+                case 4 ->
                     verClasificacion();
             }
         } while (opcion != 0);
@@ -114,83 +112,51 @@ public class ControladorJugador {
             vistaJugador.mensaje("Error al registrar: " + e.getMessage());
         }
     }
-    
-    
-    // metodo propio para ver sus partidos
-    public void consultarPartidosPropios() {
+     // Consultar partidos programados, filtrados por torneo
+public void consultarPartidosDelTorneo() {
     try {
-        int idJugador = Integer.parseInt(vistaJugador.pedirDato("Ingrese su ID para consultar sus partidos: "));
-        List<Partido> partidos = sistema.getListaPartidos();
+        // 1) Pedir al administrador el ID del torneo
+        int idTorneo = Integer.parseInt(
+            vistaJugador.pedirDato("Ingrese ID del torneo: ")
+        );
 
-        List<Partido> partidosDelJugador = partidos.stream()
-                .filter(p -> participaJugadorEnPartido(p, idJugador))
-                .collect(Collectors.toList());
-
-        if (partidosDelJugador.isEmpty()) {
-            vistaJugador.mensaje("No hay partidos registrados para este jugador.");
-            return;
-        }
-
-        vistaJugador.mensaje("=== PARTIDOS DEL JUGADOR ===");
-        for (Partido partido : partidosDelJugador) {
-            int idPareja1 = partido.getPareja1().getIdPareja();
-            String jugador1Pareja1 = partido.getPareja1().getJugador1().getNombre();
-            String jugador2Pareja1 = partido.getPareja1().getJugador2().getNombre();
-
-            int idPareja2 = partido.getPareja2().getIdPareja();
-            String jugador1Pareja2 = partido.getPareja2().getJugador1().getNombre();
-            String jugador2Pareja2 = partido.getPareja2().getJugador2().getNombre();
-
-            String resultado = partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado();
-
-            vistaJugador.mensaje(
-                String.format(
-                    "Partido ID: %d | Pareja %d (%s y %s) | Pareja %d (%s y %s) | Grupo: %s | Resultado: %s",
-                    partido.getIdPartido(),
-                    idPareja1, jugador1Pareja1, jugador2Pareja1,
-                    idPareja2, jugador1Pareja2, jugador2Pareja2,
-                    partido.getIdGrupo(),
-                    resultado
-                )
-            );
-        }
-    } catch (Exception e) {
-        vistaJugador.mensaje("Error al consultar partidos: " + e.getMessage());
-    }
-}
-
-    
-    
-    
-    // metodo para consultar todos los partidos 
-    public void consultarPartidosDelTorneo() {
-    try {
-        List<Partido> partidos = sistema.getListaPartidos();
+        // 2) Obtener solo los partidos de ese torneo
+        List<Partido> partidos = sistema.getListaPartidos().stream()
+            .filter(p -> p.getIdTorneo() == idTorneo)
+            .collect(Collectors.toList());
 
         if (partidos.isEmpty()) {
-            vistaJugador.mensaje("No hay partidos cargados.");
+            vistaJugador.mensaje(
+                "No hay partidos cargados para el torneo " + idTorneo + "."
+            );
             return;
         }
 
-        vistaJugador.mensaje("=== PARTIDOS PROGRAMADOS ===");
+        // 3) Mostrar encabezado
+        vistaJugador.mensaje(
+            "=== PARTIDOS PROGRAMADOS (Torneo " + idTorneo + ") ==="
+        );
 
+        // 4) Recorrer y mostrar cada partido
         for (Partido partido : partidos) {
-            int idPareja1 = partido.getPareja1().getIdPareja();
-            String jugador1Pareja1 = partido.getPareja1().getJugador1().getNombre();
-            String jugador2Pareja1 = partido.getPareja1().getJugador2().getNombre();
+            int idP1   = partido.getPareja1().getIdPareja();
+            String j1a = partido.getPareja1().getJugador1().getNombre();
+            String j2a = partido.getPareja1().getJugador2().getNombre();
 
-            int idPareja2 = partido.getPareja2().getIdPareja();
-            String jugador1Pareja2 = partido.getPareja2().getJugador1().getNombre();
-            String jugador2Pareja2 = partido.getPareja2().getJugador2().getNombre();
+            int idP2   = partido.getPareja2().getIdPareja();
+            String j1b = partido.getPareja2().getJugador1().getNombre();
+            String j2b = partido.getPareja2().getJugador2().getNombre();
 
-            String resultado = partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado();
+            String resultado = partido.getResultado().isEmpty()
+                ? "Pendiente"
+                : partido.getResultado();
 
             vistaJugador.mensaje(
                 String.format(
                     "Partido ID: %d | Pareja %d (%s y %s) | Pareja %d (%s y %s) | Grupo: %s | Resultado: %s",
                     partido.getIdPartido(),
-                    idPareja1, jugador1Pareja1, jugador2Pareja1,
-                    idPareja2, jugador1Pareja2, jugador2Pareja2,
+                    idP1, j1a, j2a,
+                    idP2, j1b, j2b,
                     partido.getIdGrupo(),
                     resultado
                 )
@@ -199,50 +165,57 @@ public class ControladorJugador {
     } catch (Exception e) {
         vistaJugador.mensaje("Error al consultar partidos: " + e.getMessage());
     }
-}
-
-    
-    
-    // consultar clasificacion por grupo
+}   
+    // consultar clasificacion por torneo y grupo
     public void verClasificacion() {
-        try {
-            String idGrupo = vistaJugador.pedirDato("Ingrese el ID del grupo (ej: A): ");
-            EstadisticaDAO estadisticaDAO = new EstadisticaDAO(sistema.getConexion());
-            ParejaDAO parejaDAO = sistema.getParejaDAO();
+    try {
+        // 1) Pedir datos de torneo y grupo
+        int idTorneo = Integer.parseInt(
+            vistaJugador.pedirDato("Ingrese ID del torneo: ")
+        );
+        String idGrupo = vistaJugador.pedirDato(
+            "Ingrese el ID del grupo (ej: A): "
+        );
 
-            List<Estadistica> ranking = estadisticaDAO.obtenerEstadisticasOrdenadasPorGrupo(idGrupo);
+        EstadisticaDAO estadisticaDAO = new EstadisticaDAO(sistema.getConexion());
+        ParejaDAO parejaDAO       = sistema.getParejaDAO();
 
-            if (ranking.isEmpty()) {
-                vistaJugador.mensaje("No hay estadisticas cargadas para el grupo " + idGrupo);
-                return;
-            }
+        // 2) Obtener solo las estadísticas del grupo y torneo indicados
+        List<Estadistica> ranking = estadisticaDAO
+            .obtenerEstadisticasPorGrupoYTorneo(idGrupo, idTorneo);
 
-            vistaJugador.mensaje("=== CLASIFICACION GRUPO " + idGrupo + " ===");
-
-            for (Estadistica e : ranking) {
-                Pareja pareja = parejaDAO.buscarParejaPorId(e.getIdPareja());
-                String nombre1 = pareja.getJugador1().getNombre();
-                String nombre2 = pareja.getJugador2().getNombre();
-                vistaJugador.mensaje(
-                        String.format("Pareja %d (%s y %s): PJ: %d | PG: %d | PP: %d",
-                                e.getIdPareja(), nombre1, nombre2,
-                                e.getPartidosJugados(), e.getPartidosGanados(), e.getPartidosPerdidos())
-                );
-            }
-
-        } catch (Exception e) {
-            vistaJugador.mensaje("Error al mostrar clasificacion: " + e.getMessage());
-            e.printStackTrace();
+        if (ranking.isEmpty()) {
+            vistaJugador.mensaje(
+                "No hay estadísticas para el torneo " + idTorneo +
+                ", grupo " + idGrupo + "."
+            );
+            return;
         }
-    }
-    
-    
-    // metodo auxiliar
-    public boolean participaJugadorEnPartido(Partido partido, int idJugador) {
-        return partido.getPareja1().getJugador1().getId() == idJugador
-                || partido.getPareja1().getJugador2().getId() == idJugador
-                || partido.getPareja2().getJugador1().getId() == idJugador
-                || partido.getPareja2().getJugador2().getId() == idJugador;
-    }
 
+        // 3) Mostrar encabezado
+        vistaJugador.mensaje(
+            "=== CLASIFICACIÓN Torneo " + idTorneo + " - Grupo " + idGrupo + " ==="
+        );
+
+        // 4) Recorrer y mostrar cada pareja con su estadística
+        for (Estadistica e : ranking) {
+            Pareja pareja = parejaDAO.buscarParejaPorId(e.getIdPareja());
+            String n1 = pareja.getJugador1().getNombre();
+            String n2 = pareja.getJugador2().getNombre();
+            vistaJugador.mensaje(
+                String.format(
+                    "Pareja %d (%s y %s): PJ: %d | PG: %d | PP: %d",
+                    e.getIdPareja(), n1, n2,
+                    e.getPartidosJugados(),
+                    e.getPartidosGanados(),
+                    e.getPartidosPerdidos()
+                )
+            );
+        }
+
+    } catch (Exception e) {
+        vistaJugador.mensaje("Error al mostrar clasificación: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 }
