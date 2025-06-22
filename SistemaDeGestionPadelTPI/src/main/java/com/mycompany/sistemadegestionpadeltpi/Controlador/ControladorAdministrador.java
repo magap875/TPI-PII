@@ -80,34 +80,47 @@ public class ControladorAdministrador {
     }
 
     // metodo para generar los partidos por grupo
-    public void generarPartidosPorGrupo() {
-        try {
-            List<Pareja> parejas = sistema.getListaParejas();
-            if (parejas.isEmpty()) {
-                vistaAdministrador.mensaje("No hay parejas cargadas.");
-                return;
-            }
+public void generarPartidosPorGrupo() {
+    try {
+        List<Pareja> parejas = sistema.getListaParejas();
+        if (parejas.isEmpty()) {
+            vistaAdministrador.mensaje("No hay parejas cargadas.");
+            return;
+        }
 
-            PartidoDAO partidoDAO = sistema.getPartidoDAO();
+        PartidoDAO partidoDAO = sistema.getPartidoDAO();
 
-            for (int i = 0; i < parejas.size(); i++) {
-                for (int j = i + 1; j < parejas.size(); j++) {
-                    Pareja p1 = parejas.get(i);
-                    Pareja p2 = parejas.get(j);
+        for (int i = 0; i < parejas.size(); i++) {
+            for (int j = i + 1; j < parejas.size(); j++) {
+                Pareja p1 = parejas.get(i);
+                Pareja p2 = parejas.get(j);
 
-                    if (p1.getIdGrupo().equals(p2.getIdGrupo())) {
-                        Partido partido = new Partido(0, p1, p2, "", p1.getIdGrupo());
+                // 1) Mismo torneo, 2) mismo grupo
+                if (p1.getIdTorneo() == p2.getIdTorneo() 
+                        && p1.getIdGrupo().equals(p2.getIdGrupo())) {
+
+                    // 3) Evitar crear de nuevo si ya existe
+                    boolean yaExiste = partidoDAO.existePartido(
+                        p1.getIdPareja(),
+                        p2.getIdPareja(),
+                        p1.getIdTorneo()
+                    );
+                    if (!yaExiste) {
+                        Partido partido = new Partido(0,p1,p2,"",p1.getIdTorneo(),p1.getIdGrupo());
                         partidoDAO.insertarPartido(partido);
                     }
                 }
             }
-            sistema.traerPartidosDesdeBD();
-            vistaAdministrador.mensaje("Partidos generados correctamente.");
-
-        } catch (Exception e) {
-            vistaAdministrador.mensaje("Error al generar partidos: " + e.getMessage());
         }
+
+        sistema.traerPartidosDesdeBD();
+        vistaAdministrador.mensaje("Partidos generados correctamente.");
+
+    } catch (Exception e) {
+        vistaAdministrador.mensaje("Error al generar partidos: " + e.getMessage());
     }
+}
+
 
     public void cargarResultado() {
         try {
@@ -153,34 +166,44 @@ public class ControladorAdministrador {
     
     // metodo para consultar todos los partidos 
     public void consultarPartidosDelTorneo() {
-        try {
-            List<Partido> partidos = sistema.getListaPartidos();
+    try {
+        List<Partido> partidos = sistema.getListaPartidos();
 
-            if (partidos.isEmpty()) {
-                vistaAdministrador.mensaje("No hay partidos cargados.");
-                return;
-            }
-
-            vistaAdministrador.mensaje("=== PARTIDOS PROGRAMADOS ===");
-
-            for (Partido partido : partidos) {
-                vistaAdministrador.mensaje(
-                        String.format("Partido ID: %d | Pareja 1: %s y %s | Pareja 2: %s y %s | Grupo: %s | Resultado: %s",
-                                partido.getIdPartido(),
-                                partido.getPareja1().getJugador1().getNombre(),
-                                partido.getPareja1().getJugador2().getNombre(),
-                                partido.getPareja2().getJugador1().getNombre(),
-                                partido.getPareja2().getJugador2().getNombre(),
-                                partido.getIdGrupo(),
-                                partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado()
-                        )
-                );
-            }
-
-        } catch (Exception e) {
-            vistaAdministrador.mensaje("Error al consultar partidos: " + e.getMessage());
+        if (partidos.isEmpty()) {
+            vistaAdministrador.mensaje("No hay partidos cargados.");
+            return;
         }
+
+        vistaAdministrador.mensaje("=== PARTIDOS PROGRAMADOS ===");
+
+        for (Partido partido : partidos) {
+            int idPareja1 = partido.getPareja1().getIdPareja();
+            String jugador1Pareja1 = partido.getPareja1().getJugador1().getNombre();
+            String jugador2Pareja1 = partido.getPareja1().getJugador2().getNombre();
+
+            int idPareja2 = partido.getPareja2().getIdPareja();
+            String jugador1Pareja2 = partido.getPareja2().getJugador1().getNombre();
+            String jugador2Pareja2 = partido.getPareja2().getJugador2().getNombre();
+
+            String resultado = partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado();
+
+            vistaAdministrador.mensaje(
+                String.format(
+                    "Partido ID: %d | Pareja %d (%s y %s) | Pareja %d (%s y %s) | Grupo: %s | Resultado: %s",
+                    partido.getIdPartido(),
+                    idPareja1, jugador1Pareja1, jugador2Pareja1,
+                    idPareja2, jugador1Pareja2, jugador2Pareja2,
+                    partido.getIdGrupo(),
+                    resultado
+                )
+            );
+        }
+    } catch (Exception e) {
+        vistaAdministrador.mensaje("Error al consultar partidos: " + e.getMessage());
     }
+}
+
+
 
     // consultar clasificacion por grupo
     public void verClasificacion() {

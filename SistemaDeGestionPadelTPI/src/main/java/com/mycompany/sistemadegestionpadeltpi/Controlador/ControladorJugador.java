@@ -66,6 +66,7 @@ public class ControladorJugador {
         vistaJugador.mensaje("*** Registre la pareja ***");
 
         try {
+            int idTorneo = Integer.parseInt(vistaJugador.pedirDato("ID del torneo que desea inscribrse: "));
             int idPareja = Integer.parseInt(vistaJugador.pedirDato("ID de la pareja: "));
             int idIntegrante1 = Integer.parseInt(vistaJugador.pedirDato("ID del primer jugador: "));
             int idIntegrante2 = Integer.parseInt(vistaJugador.pedirDato("ID del segundo jugador: "));
@@ -89,7 +90,7 @@ public class ControladorJugador {
 
             if (jugador1 != null && jugador2 != null) {
                 GrupoDAO grupoDAO = new GrupoDAO(sistema.getConexion());
-                List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
+                List<String> idsGrupo = grupoDAO.obtenerIdsGrupoPorTorneo(idTorneo);
 
                 if (idsGrupo.isEmpty()) {
                     vistaJugador.mensaje("No hay grupos disponibles.");
@@ -97,7 +98,7 @@ public class ControladorJugador {
                 }
 
                 String idGrupoAleatorio = idsGrupo.get(new Random().nextInt(idsGrupo.size()));
-                Pareja pareja = new Pareja(idPareja, jugador1, jugador2, idGrupoAleatorio);
+                Pareja pareja = new Pareja(idPareja, jugador1, jugador2,idTorneo, idGrupoAleatorio);
 
                 sistema.getParejaDAO().insertarParejaYAsignarleGrupo(pareja, grupoDAO);
                 
@@ -117,70 +118,89 @@ public class ControladorJugador {
     
     // metodo propio para ver sus partidos
     public void consultarPartidosPropios() {
-        try {
-            int idJugador = Integer.parseInt(vistaJugador.pedirDato("Ingrese su ID para consultar sus partidos: "));
-            List<Partido> partidos = sistema.getListaPartidos();
+    try {
+        int idJugador = Integer.parseInt(vistaJugador.pedirDato("Ingrese su ID para consultar sus partidos: "));
+        List<Partido> partidos = sistema.getListaPartidos();
 
-            List<Partido> partidosDelJugador = partidos.stream()
-                    .filter(p -> participaJugadorEnPartido(p, idJugador))
-                    .collect(Collectors.toList());
+        List<Partido> partidosDelJugador = partidos.stream()
+                .filter(p -> participaJugadorEnPartido(p, idJugador))
+                .collect(Collectors.toList());
 
-            if (partidosDelJugador.isEmpty()) {
-                vistaJugador.mensaje("No hay partidos registrados para este jugador.");
-                return;
-            }
-
-            vistaJugador.mensaje("=== PARTIDOS DEL JUGADOR ===");
-            for (Partido partido : partidosDelJugador) {
-                vistaJugador.mensaje(
-                        String.format("Partido ID: %d | Pareja 1: %s y %s | Pareja 2: %s y %s | Grupo: %s | Resultado: %s",
-                                partido.getIdPartido(),
-                                partido.getPareja1().getJugador1().getNombre(),
-                                partido.getPareja1().getJugador2().getNombre(),
-                                partido.getPareja2().getJugador1().getNombre(),
-                                partido.getPareja2().getJugador2().getNombre(),
-                                partido.getIdGrupo(),
-                                partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado()
-                        )
-                );
-            }
-        } catch (Exception e) {
-            vistaJugador.mensaje("Error al consultar partidos: " + e.getMessage());
+        if (partidosDelJugador.isEmpty()) {
+            vistaJugador.mensaje("No hay partidos registrados para este jugador.");
+            return;
         }
+
+        vistaJugador.mensaje("=== PARTIDOS DEL JUGADOR ===");
+        for (Partido partido : partidosDelJugador) {
+            int idPareja1 = partido.getPareja1().getIdPareja();
+            String jugador1Pareja1 = partido.getPareja1().getJugador1().getNombre();
+            String jugador2Pareja1 = partido.getPareja1().getJugador2().getNombre();
+
+            int idPareja2 = partido.getPareja2().getIdPareja();
+            String jugador1Pareja2 = partido.getPareja2().getJugador1().getNombre();
+            String jugador2Pareja2 = partido.getPareja2().getJugador2().getNombre();
+
+            String resultado = partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado();
+
+            vistaJugador.mensaje(
+                String.format(
+                    "Partido ID: %d | Pareja %d (%s y %s) | Pareja %d (%s y %s) | Grupo: %s | Resultado: %s",
+                    partido.getIdPartido(),
+                    idPareja1, jugador1Pareja1, jugador2Pareja1,
+                    idPareja2, jugador1Pareja2, jugador2Pareja2,
+                    partido.getIdGrupo(),
+                    resultado
+                )
+            );
+        }
+    } catch (Exception e) {
+        vistaJugador.mensaje("Error al consultar partidos: " + e.getMessage());
     }
+}
+
     
     
     
     // metodo para consultar todos los partidos 
     public void consultarPartidosDelTorneo() {
-        try {
-            List<Partido> partidos = sistema.getListaPartidos();
+    try {
+        List<Partido> partidos = sistema.getListaPartidos();
 
-            if (partidos.isEmpty()) {
-                vistaJugador.mensaje("No hay partidos cargados.");
-                return;
-            }
-
-            vistaJugador.mensaje("=== PARTIDOS PROGRAMADOS ===");
-
-            for (Partido partido : partidos) {
-                vistaJugador.mensaje(
-                        String.format("Partido ID: %d | Pareja 1: %s y %s | Pareja 2: %s y %s | Grupo: %s | Resultado: %s",
-                                partido.getIdPartido(),
-                                partido.getPareja1().getJugador1().getNombre(),
-                                partido.getPareja1().getJugador2().getNombre(),
-                                partido.getPareja2().getJugador1().getNombre(),
-                                partido.getPareja2().getJugador2().getNombre(),
-                                partido.getIdGrupo(),
-                                partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado()
-                        )
-                );
-            }
-
-        } catch (Exception e) {
-            vistaJugador.mensaje("Error al consultar partidos: " + e.getMessage());
+        if (partidos.isEmpty()) {
+            vistaJugador.mensaje("No hay partidos cargados.");
+            return;
         }
+
+        vistaJugador.mensaje("=== PARTIDOS PROGRAMADOS ===");
+
+        for (Partido partido : partidos) {
+            int idPareja1 = partido.getPareja1().getIdPareja();
+            String jugador1Pareja1 = partido.getPareja1().getJugador1().getNombre();
+            String jugador2Pareja1 = partido.getPareja1().getJugador2().getNombre();
+
+            int idPareja2 = partido.getPareja2().getIdPareja();
+            String jugador1Pareja2 = partido.getPareja2().getJugador1().getNombre();
+            String jugador2Pareja2 = partido.getPareja2().getJugador2().getNombre();
+
+            String resultado = partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado();
+
+            vistaJugador.mensaje(
+                String.format(
+                    "Partido ID: %d | Pareja %d (%s y %s) | Pareja %d (%s y %s) | Grupo: %s | Resultado: %s",
+                    partido.getIdPartido(),
+                    idPareja1, jugador1Pareja1, jugador2Pareja1,
+                    idPareja2, jugador1Pareja2, jugador2Pareja2,
+                    partido.getIdGrupo(),
+                    resultado
+                )
+            );
+        }
+    } catch (Exception e) {
+        vistaJugador.mensaje("Error al consultar partidos: " + e.getMessage());
     }
+}
+
     
     
     // consultar clasificacion por grupo

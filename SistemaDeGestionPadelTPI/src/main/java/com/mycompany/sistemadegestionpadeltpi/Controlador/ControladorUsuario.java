@@ -34,34 +34,43 @@ public class ControladorUsuario {
     
     // mismo metodo para consultar partidos generales
     public void consultarPartidosDelTorneo() {
-        try {
-            List<Partido> partidos = sistema.getListaPartidos();
+    try {
+        List<Partido> partidos = sistema.getListaPartidos();
 
-            if (partidos.isEmpty()) {
-                vistaUsuario.mensaje("No hay partidos cargados.");
-                return;
-            }
-
-            vistaUsuario.mensaje("=== PARTIDOS PROGRAMADOS ===");
-
-            for (Partido partido : partidos) {
-                vistaUsuario.mensaje(
-                        String.format("Partido ID: %d | Pareja 1: %s y %s | Pareja 2: %s y %s | Grupo: %s | Resultado: %s",
-                                partido.getIdPartido(),
-                                partido.getPareja1().getJugador1().getNombre(),
-                                partido.getPareja1().getJugador2().getNombre(),
-                                partido.getPareja2().getJugador1().getNombre(),
-                                partido.getPareja2().getJugador2().getNombre(),
-                                partido.getIdGrupo(),
-                                partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado()
-                        )
-                );
-            }
-
-        } catch (Exception e) {
-            vistaUsuario.mensaje("Error al consultar partidos: " + e.getMessage());
+        if (partidos.isEmpty()) {
+            vistaUsuario.mensaje("No hay partidos cargados.");
+            return;
         }
+
+        vistaUsuario.mensaje("=== PARTIDOS PROGRAMADOS ===");
+
+        for (Partido partido : partidos) {
+            int idPareja1 = partido.getPareja1().getIdPareja();
+            String jugador1Pareja1 = partido.getPareja1().getJugador1().getNombre();
+            String jugador2Pareja1 = partido.getPareja1().getJugador2().getNombre();
+
+            int idPareja2 = partido.getPareja2().getIdPareja();
+            String jugador1Pareja2 = partido.getPareja2().getJugador1().getNombre();
+            String jugador2Pareja2 = partido.getPareja2().getJugador2().getNombre();
+
+            String resultado = partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado();
+
+            vistaUsuario.mensaje(
+                String.format(
+                    "Partido ID: %d | Pareja %d (%s y %s) | Pareja %d (%s y %s) | Grupo: %s | Resultado: %s",
+                    partido.getIdPartido(),
+                    idPareja1, jugador1Pareja1, jugador2Pareja1,
+                    idPareja2, jugador1Pareja2, jugador2Pareja2,
+                    partido.getIdGrupo(),
+                    resultado
+                )
+            );
+        }
+    } catch (Exception e) {
+        vistaUsuario.mensaje("Error al consultar partidos: " + e.getMessage());
     }
+}
+
 
 
     // mismo metodo para ver clasificacion general

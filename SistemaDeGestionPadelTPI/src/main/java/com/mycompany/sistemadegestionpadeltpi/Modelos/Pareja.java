@@ -7,14 +7,26 @@ public class Pareja {
     private int idPareja;
     private Jugador jugador1;
     private Jugador jugador2;
+    private int idTorneo;
     private String idGrupo;
 
-    public Pareja(int idPareja, Jugador jugador1, Jugador jugador2, String idGrupo) {
+    public Pareja(int idPareja, Jugador jugador1, Jugador jugador2, int idTorneo, String idGrupo) {
         this.idPareja = idPareja;
         this.jugador1 = jugador1;
         this.jugador2 = jugador2;
+        this.idTorneo = idTorneo;
         this.idGrupo = idGrupo;
     }
+
+    public int getIdTorneo() {
+        return idTorneo;
+    }
+
+    public void setIdTorneo(int idTorneo) {
+        this.idTorneo = idTorneo;
+    }
+
+    
 
     public String getIdGrupo() {
         return idGrupo;

@@ -108,10 +108,11 @@ public class SistemaDeGestionPadelTPI {
                 int idJugador1 = rs.getInt("idJugador1");
                 int idJugador2 = rs.getInt("idJugador2");
                 String idGrupo = rs.getString("idGrupo");
+                int idTorneo = rs.getInt("idTorneo");
                 Jugador jugador1 = jugadorDAO.buscarJugadorPorId(idJugador1);
                 Jugador jugador2 = jugadorDAO.buscarJugadorPorId(idJugador2);
 
-                Pareja pareja = new Pareja(idPareja, jugador1, jugador2, idGrupo);
+                Pareja pareja = new Pareja(idPareja, jugador1, jugador2,idTorneo, idGrupo);
                 listaParejas.add(pareja);
             }
 
@@ -133,11 +134,11 @@ public class SistemaDeGestionPadelTPI {
                 int idPareja2 = rs.getInt("idPareja2");
                 String idGrupo = rs.getString("idGrupo");
                 String resultado = rs.getString("resultado");
-
+                int idTorneo = rs.getInt("idTorneo");
                 Pareja pareja1 = parejaDAO.buscarParejaPorId(idPareja1);
                 Pareja pareja2 = parejaDAO.buscarParejaPorId(idPareja2);
 
-                listaPartidos.add(new Partido(id, pareja1, pareja2, resultado, idGrupo));
+                listaPartidos.add(new Partido(id, pareja1, pareja2, resultado,idTorneo, idGrupo));
             }
 
         } catch (Exception e) {

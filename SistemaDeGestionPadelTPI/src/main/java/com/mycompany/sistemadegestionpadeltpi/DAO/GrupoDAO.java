@@ -22,18 +22,21 @@ public class GrupoDAO {
         }
     }
     
-    // obtenemos los id de grupo
-    public List<String> obtenerTodosLosIdGrupo() throws SQLException {
-        List<String> ids = new ArrayList<>();
-        String sql = "SELECT idGrupo FROM Grupo";
-        try (PreparedStatement ps = conexion.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+   
+    public List<String> obtenerIdsGrupoPorTorneo(int idTorneo) throws SQLException {
+    List<String> grupos = new ArrayList<>();
+    String sql = "SELECT idGrupo FROM grupo WHERE idTorneo = ?";
+    try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        ps.setInt(1, idTorneo);
+        try (ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                ids.add(rs.getString("idGrupo"));
+                grupos.add(rs.getString("idGrupo"));
+                }
             }
         }
-        return ids;
+        return grupos;  
     }
-    
+
     // buscamos grupos por id
     public Grupo buscarGrupoPorId(String idGrupo) throws SQLException {
         String sql = "SELECT * FROM grupo WHERE idGrupo = ?";
