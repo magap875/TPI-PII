@@ -16,55 +16,54 @@ public class ParejaDAO {
     
     
     // metodo para cargar la pareja a la bbdd
-    public void insertarPareja(Pareja pareja, GrupoDAO grupoDAO) throws SQLException {
+    public boolean insertarParejaYAsignarleGrupo(Pareja pareja, GrupoDAO grupoDAO) throws SQLException {
+    List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
 
-        String sql = "INSERT INTO pareja (idJugador1, idJugador2, idGrupo) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, pareja.getJugador1().getId());
-            ps.setInt(2, pareja.getJugador2().getId());
-            ps.setString(3, pareja.getIdGrupo());
-            ps.executeUpdate();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
+    for (String idGrupo : idsGrupo) {
+        // Contar cuántas parejas tiene este grupo
+        String sql = "SELECT COUNT(*) AS cantidad FROM pareja WHERE idGrupo = ?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setString(1, idGrupo);
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    int idGenerado = rs.getInt(1);
-                    pareja.setIdPareja(idGenerado);
+                    int cantidad = rs.getInt("cantidad");
+                    if (cantidad < 3) {
+                        // Asignar el grupo al objeto pareja
+                        pareja.setIdGrupo(idGrupo);
 
-                    System.out.println("Insertando estadistica para pareja: " + idGenerado);
+                        // Insertar pareja
+                        String insertSql = "INSERT INTO pareja (idJugador1, idJugador2, idGrupo) VALUES (?, ?, ?)";
+                        try (PreparedStatement insertPs = conexion.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+                            insertPs.setInt(1, pareja.getJugador1().getId());
+                            insertPs.setInt(2, pareja.getJugador2().getId());
+                            insertPs.setString(3, idGrupo);
+                            insertPs.executeUpdate();
 
-                    // insertamos estadistica con el ID correcto
-                    EstadisticaDAO estadisticaDAO = new EstadisticaDAO(conexion);
-                    estadisticaDAO.insertarEstadisticaInicial(idGenerado);
-                } else {
-                    throw new SQLException("No se pudo obtener el ID generado para la pareja.");
-                }
-            }
-        }
-    }
+                            // Obtener el ID generado
+                            try (ResultSet generatedKeys = insertPs.getGeneratedKeys()) {
+                                if (generatedKeys.next()) {
+                                    int idGenerado = generatedKeys.getInt(1);
+                                    pareja.setIdPareja(idGenerado);
 
-    
-    // metodo para buscar grupos con espacio
-    private String buscarGrupoConEspacio(GrupoDAO grupoDAO) throws SQLException {
-        List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
+                                    // Insertar estadística
+                                    EstadisticaDAO estadisticaDAO = new EstadisticaDAO(conexion);
+                                    estadisticaDAO.insertarEstadisticaInicial(idGenerado);
 
-        for (String idGrupo : idsGrupo) {
-            // contamos parejas por grupo
-            String sql = "SELECT COUNT(*) AS cantidad FROM pareja WHERE idGrupo = ?";
-            try (PreparedStatement ps = conexion.prepareStatement(sql)) {
-                ps.setString(1, idGrupo);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        int cantidad = rs.getInt("cantidad");
-                        if (cantidad < 3) {
-                            return idGrupo;
+                                    return true; // éxito total
+                                } else {
+                                    throw new SQLException("No se pudo obtener el ID generado para la pareja.");
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-
-        return null; // no habria grupos con espacio
     }
+
+    return false; // No hay grupos disponibles
+}
+
 
     
     // buscamos parejas por id

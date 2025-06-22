@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.util.*;
 
 public class Torneo {
-
+    private int idTorneo;
     private String nombre;
     private String categoria;
     private List<Pareja> parejasInscriptas;
@@ -15,7 +15,8 @@ public class Torneo {
     private int capacidadMaxima;
     private SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(conexion);
 
-    public Torneo(String nombre, String categoria, int capacidadMaxima, Connection conexion) {
+    public Torneo(int idTorneo, String nombre, String categoria, int capacidadMaxima, Connection conexion) {
+        this.idTorneo=idTorneo;
         this.nombre = nombre;
         this.categoria = categoria;
         this.capacidadMaxima = capacidadMaxima;
@@ -28,6 +29,14 @@ public class Torneo {
         this.playoffs = new ArrayList<>();
     }
 
+    public int getIdTorneo() {
+        return idTorneo;
+    }
+
+    public void setIdTorneo(int idTorneo) {
+        this.idTorneo = idTorneo;
+    }
+    
     public String getNombre() {
         return nombre;
     }

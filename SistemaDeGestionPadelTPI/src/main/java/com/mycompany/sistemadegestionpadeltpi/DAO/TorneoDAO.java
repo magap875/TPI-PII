@@ -25,11 +25,12 @@ public class TorneoDAO {
     // facilitar la busqueda de un torneo por id
     public Torneo buscarTorneoPorId(int id) throws SQLException {
         String sql = "SELECT * FROM torneo WHERE id = ?";
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (PreparedStatement ps = conexion.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return new Torneo(
+                            rs.getInt("idTorneo"),
                             rs.getString("nombre"),
                             rs.getString("categoria"),
                             rs.getInt("capacidad_maxima"),

@@ -13,10 +13,11 @@ public class GrupoDAO {
 
     // cargar grupos a la bbdd
     public void insertarGrupo(Grupo grupo) throws SQLException {
-        String sql = "INSERT INTO grupo (idGrupo) VALUES (?)";
+        String sql = "INSERT INTO grupo (idGrupo, idTorneo) VALUES (?, ?)";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, grupo.getIdGrupo());
+            ps.setInt(2,grupo.getIdTorneo());
             ps.executeUpdate();
         }
     }
@@ -38,10 +39,12 @@ public class GrupoDAO {
         String sql = "SELECT * FROM grupo WHERE idGrupo = ?";
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
             ps.setString(1, idGrupo);
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     String id = rs.getString("idGrupo");
-                    return new Grupo(id);
+                    int idTorneo=rs.getInt("idTorneo");
+                    return new Grupo(id,idTorneo);
                 }
             }
         }

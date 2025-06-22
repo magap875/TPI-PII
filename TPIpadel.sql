@@ -1,7 +1,7 @@
 -- CREACIÓN DE LA BASE DE DATOS
 CREATE DATABASE IF NOT EXISTS sistemapadel;
 USE sistemapadel;
-
+-- drop database sistemapadel;
 -- TABLA JUGADOR
 CREATE TABLE IF NOT EXISTS jugador (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -10,9 +10,19 @@ CREATE TABLE IF NOT EXISTS jugador (
     telefonoJugador VARCHAR(20)
 );
 
+-- TABLA TORNEO
+CREATE TABLE IF NOT EXISTS torneo (
+    idTorneo INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    capacidad_maxima INT NOT NULL
+);
+
 -- TABLA GRUPO
 CREATE TABLE IF NOT EXISTS grupo (
-    idGrupo CHAR(1) PRIMARY KEY
+    idGrupo CHAR(1) PRIMARY KEY,
+    idTorneo INT NOT NULL,
+    FOREIGN KEY (idTorneo) REFERENCES torneo(idTorneo)
 );
 
 -- TABLA PAREJA
@@ -46,17 +56,6 @@ CREATE TABLE IF NOT EXISTS estadistica (
     partidosPerdidos INT DEFAULT 0,
     FOREIGN KEY (idPareja) REFERENCES pareja(idPareja)
 );
-
-
--- TABLA TORNEO
-CREATE TABLE IF NOT EXISTS torneo (
-    idTorneo INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    categoria VARCHAR(50) NOT NULL,
-    capacidad_maxima INT NOT NULL
-);
-
--- INSERTAR 24 JUGADORES
 INSERT INTO jugador (nombreJugador, dniJugador, telefonoJugador) VALUES
 ('Jugador 1', 'DNI001', '111-1111'),
 ('Jugador 2', 'DNI002', '111-1112'),
@@ -70,8 +69,3 @@ INSERT INTO jugador (nombreJugador, dniJugador, telefonoJugador) VALUES
 ('Jugador 10', 'DNI010', '111-1120'),
 ('Jugador 11', 'DNI011', '111-1121'),
 ('Jugador 12', 'DNI012', '111-1122');
-
-
-
-
-

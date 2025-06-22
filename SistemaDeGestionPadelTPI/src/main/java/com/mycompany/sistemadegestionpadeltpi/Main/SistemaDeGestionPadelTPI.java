@@ -37,7 +37,7 @@ public class SistemaDeGestionPadelTPI {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "frodo1234"
+                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "popi2025"
             );
 
             SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(con);

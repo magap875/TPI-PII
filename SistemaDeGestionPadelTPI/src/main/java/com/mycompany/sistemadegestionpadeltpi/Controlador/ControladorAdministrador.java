@@ -1,5 +1,4 @@
 package com.mycompany.sistemadegestionpadeltpi.Controlador;
-
 import com.mycompany.sistemadegestionpadeltpi.DAO.EstadisticaDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.GrupoDAO;
 import com.mycompany.sistemadegestionpadeltpi.DAO.ParejaDAO;
@@ -50,11 +49,12 @@ public class ControladorAdministrador {
     // metodo de creacion de torneo y grupos
     public void crearTorneo() {
         try {
+            int idTorneo=Integer.parseInt(vistaAdministrador.pedirDato("Id del Torneo: "));
             String nombre = vistaAdministrador.pedirDato("Nombre del torneo: ");
             String categoria = vistaAdministrador.pedirDato("Categoria del torneo: ");
             int cuposDisponibles = Integer.parseInt(vistaAdministrador.pedirDato("Cantidad de parejas del torneo: "));
 
-            Torneo torneo = new Torneo(nombre, categoria, cuposDisponibles, this.conexion);
+            Torneo torneo = new Torneo(idTorneo, nombre, categoria, cuposDisponibles, this.conexion);
 
             TorneoDAO torneoDAO = new TorneoDAO(conexion);
             torneoDAO.insertarTorneo(torneo);
@@ -65,7 +65,7 @@ public class ControladorAdministrador {
 
             for (int i = 0; i < cantidadGrupos; i++) {
                 char idGrupo = (char) ('A' + i);
-                Grupo grupo = new Grupo(String.valueOf(idGrupo));
+                Grupo grupo = new Grupo(String.valueOf(idGrupo), idTorneo);
                 grupoDAO.insertarGrupo(grupo);
                 grupos.add(grupo);
             }
@@ -141,7 +141,8 @@ public class ControladorAdministrador {
 
             // actualizamos estadisticas
             sistema.getEstadisticaDAO().actualizarEstadisticas(ganador, perdedor);
-
+            // actualizamos resultados en lista
+            sistema.traerPartidosDesdeBD();
             vistaAdministrador.mensaje("Resultado y estadísticas actualizadas correctamente.");
 
         } catch (Exception e) {

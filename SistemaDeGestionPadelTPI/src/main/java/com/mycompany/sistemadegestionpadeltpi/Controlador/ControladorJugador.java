@@ -99,8 +99,9 @@ public class ControladorJugador {
                 String idGrupoAleatorio = idsGrupo.get(new Random().nextInt(idsGrupo.size()));
                 Pareja pareja = new Pareja(idPareja, jugador1, jugador2, idGrupoAleatorio);
 
-                sistema.getParejaDAO().insertarPareja(pareja, grupoDAO);
-                vistaJugador.mensaje("Registro exitoso en el grupo " + idGrupoAleatorio + ".");
+                sistema.getParejaDAO().insertarParejaYAsignarleGrupo(pareja, grupoDAO);
+                
+                vistaJugador.mensaje("Registro exitoso en el grupo " + pareja.getIdGrupo() + ".");
 
                 sistema.traerParejasDesdeBD();
 
