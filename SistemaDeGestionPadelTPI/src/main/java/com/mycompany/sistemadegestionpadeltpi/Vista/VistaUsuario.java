@@ -11,9 +11,8 @@ public class VistaUsuario {
         int opcion = 0;
         System.out.println();
         System.out.println("***MENU USUARIO***");
-        System.out.println("1. Consultar partidos.");
-        System.out.println("2. Ver resultados.");
-        System.out.println("3. Ver clasificacion.");
+        System.out.println("1. Consultar partidos del torneo.");
+        System.out.println("2. Ver clasificacion.");
         System.out.println("0. Salir.");
         System.out.print("Ingrese su opcion: ");
         opcion = Integer.parseInt(s.nextLine());

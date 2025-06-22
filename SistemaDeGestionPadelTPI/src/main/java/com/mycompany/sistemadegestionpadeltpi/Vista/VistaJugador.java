@@ -8,10 +8,9 @@ public class VistaJugador {
         System.out.println();
         System.out.println("***MENU JUGADOR***");
         System.out.println("1. Registrarse.");
-        System.out.println("2. Consultar partido.");
-        System.out.println("3. Ver resultado.");
+        System.out.println("2. Inscribirse a un torneo (pareja).");
+        System.out.println("3. Consultar partidos.");
         System.out.println("4. Ver clasificacion.");
-        System.out.println("5. Inscribirse a torneo.");
         System.out.println("0. Salir.");
         System.out.print("Ingrese su opcion: ");
         opcion = Integer.parseInt(s.nextLine());

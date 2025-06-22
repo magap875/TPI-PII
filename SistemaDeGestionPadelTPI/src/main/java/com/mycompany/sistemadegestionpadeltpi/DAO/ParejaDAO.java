@@ -13,13 +13,10 @@ public class ParejaDAO {
     public ParejaDAO(Connection conexion) {
         this.conexion = conexion;
     }
-
+    
+    
+    // metodo para cargar la pareja a la bbdd
     public void insertarPareja(Pareja pareja, GrupoDAO grupoDAO) throws SQLException {
-        String grupoDisponible = buscarGrupoConEspacio(grupoDAO);
-        if (grupoDisponible == null) {
-            throw new SQLException("No hay grupos disponibles con espacio.");
-        }
-        pareja.setIdGrupo(grupoDisponible);
 
         String sql = "INSERT INTO pareja (idJugador1, idJugador2, idGrupo) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -45,6 +42,7 @@ public class ParejaDAO {
         }
     }
 
+    
     // metodo para buscar grupos con espacio
     private String buscarGrupoConEspacio(GrupoDAO grupoDAO) throws SQLException {
         List<String> idsGrupo = grupoDAO.obtenerTodosLosIdGrupo();
@@ -68,6 +66,7 @@ public class ParejaDAO {
         return null; // no habria grupos con espacio
     }
 
+    
     // buscamos parejas por id
     public Pareja buscarParejaPorId(int idPareja) throws SQLException {
         String sql = "SELECT * FROM pareja WHERE idPareja = ?";
@@ -86,6 +85,7 @@ public class ParejaDAO {
         return null;
     }
 
+    
     // lista de parejas
     public List<Pareja> obtenerTodasLasParejas() {
         List<Pareja> lista = new ArrayList<>();
@@ -113,4 +113,17 @@ public class ParejaDAO {
 
         return lista;
     }
+
+    
+    // metodo auxiliar
+    public Pareja buscarParejaPorJugadorId(int idJugador) {
+        List<Pareja> lista = obtenerTodasLasParejas();
+        for (Pareja p : lista) {
+            if (p.getJugador1().getId() == idJugador || p.getJugador2().getId() == idJugador) {
+                return p;
+            }
+        }
+        return null;
+    }
+
 }

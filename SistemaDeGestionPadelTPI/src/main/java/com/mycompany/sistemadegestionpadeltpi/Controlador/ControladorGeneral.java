@@ -5,16 +5,14 @@ import com.mycompany.sistemadegestionpadeltpi.Vista.VistaGeneral;
 
 public class ControladorGeneral {
 
-    private VistaGeneral vistaGeneral = new VistaGeneral();
-    private ControladorJugador controladorJugador;
+    private final VistaGeneral vistaGeneral = new VistaGeneral();
+    private final ControladorJugador controladorJugador;
     private ControladorUsuario controladorUsuario;
-    private ControladorAdministrador controladorAdministrador;
-    private SistemaDeGestionPadelTPI sistema;
+    private final ControladorAdministrador controladorAdministrador;
 
     public ControladorGeneral(SistemaDeGestionPadelTPI sistema) {
-        this.sistema = sistema;
         this.controladorJugador = new ControladorJugador(sistema);
-        //this.controladorUsuario = new ControladorUsuario(conexion);
+        this.controladorUsuario = new ControladorUsuario(sistema);
         this.controladorAdministrador = new ControladorAdministrador(sistema);
     }
 

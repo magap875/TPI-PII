@@ -21,7 +21,7 @@ public class ControladorAdministrador {
 
     private final VistaAdministrador vistaAdministrador = new VistaAdministrador();
     private final SistemaDeGestionPadelTPI sistema;
-    private Connection conexion;
+    private final Connection conexion;
 
     public ControladorAdministrador(SistemaDeGestionPadelTPI sistema) {
         this.sistema = sistema;
@@ -34,65 +34,17 @@ public class ControladorAdministrador {
             opcion = vistaAdministrador.mostrarMenuAdministrador();
             switch (opcion) {
                 case 1 ->
-                    consultarPartidos();
-                case 2 ->
-                    verResultados();
-                case 3 ->
-                    verClasificacion();
-                case 4 ->
                     crearTorneo();
-                case 6 ->
+                case 2 ->
                     generarPartidosPorGrupo();
-                case 5 ->
+                case 3 ->
                     cargarResultado();
+                case 4 ->
+                    consultarPartidosDelTorneo();
+                case 5 ->
+                    verClasificacion();
             }
         } while (opcion != 0);
-    }
-
-    public void consultarPartidos() {
-    }
-
-    public void verResultados() {
-    }
-
-    public void cargarResultado() {
-        try {
-            int idPartido = Integer.parseInt(vistaAdministrador.pedirDato("Ingrese ID del partido: "));
-            String resultado = vistaAdministrador.pedirDato("Ingrese resultado (ej: 6-3, 6-4): ");
-
-            // actualizamos resultado en partido
-            sistema.getPartidoDAO().actualizarResultado(idPartido, resultado);
-
-            // obtenemos el partido para saber que parejas jugaron
-            Partido partido = sistema.getPartidoDAO().buscarPartidoPorId(idPartido);
-            if (partido == null) {
-                vistaAdministrador.mensaje("No se encontró el partido con ese ID.");
-                return;
-            }
-
-            // obtenemos ganador
-            int ganador = Integer.parseInt(vistaAdministrador.pedirDato(
-                    "Ingrese ID de la pareja ganadora (" + partido.getPareja1().getIdPareja() + " o " + partido.getPareja2().getIdPareja() + "): "
-            ));
-
-            int perdedor;
-            if (ganador == partido.getPareja1().getIdPareja()) {
-                perdedor = partido.getPareja2().getIdPareja();
-            } else if (ganador == partido.getPareja2().getIdPareja()) {
-                perdedor = partido.getPareja1().getIdPareja();
-            } else {
-                vistaAdministrador.mensaje("ID de pareja ganadora inválido.");
-                return;
-            }
-
-            // actualizamos estadisticas
-            sistema.getEstadisticaDAO().actualizarEstadisticas(ganador, perdedor);
-
-            vistaAdministrador.mensaje("Resultado y estadísticas actualizadas correctamente.");
-
-        } catch (Exception e) {
-            vistaAdministrador.mensaje("Error al cargar resultado: " + e.getMessage());
-        }
     }
 
     // metodo de creacion de torneo y grupos
@@ -149,13 +101,83 @@ public class ControladorAdministrador {
                     }
                 }
             }
-
             sistema.traerPartidosDesdeBD();
             vistaAdministrador.mensaje("Partidos generados correctamente.");
 
         } catch (Exception e) {
             vistaAdministrador.mensaje("Error al generar partidos: " + e.getMessage());
-            e.printStackTrace();
+        }
+    }
+
+    public void cargarResultado() {
+        try {
+            int idPartido = Integer.parseInt(vistaAdministrador.pedirDato("Ingrese ID del partido: "));
+            String resultado = vistaAdministrador.pedirDato("Ingrese resultado (ej: 6-3, 6-4): ");
+
+            // actualizamos resultado en partido
+            sistema.getPartidoDAO().actualizarResultado(idPartido, resultado);
+
+            // obtenemos el partido para saber que parejas jugaron
+            Partido partido = sistema.getPartidoDAO().buscarPartidoPorId(idPartido);
+            if (partido == null) {
+                vistaAdministrador.mensaje("No se encontró el partido con ese ID.");
+                return;
+            }
+
+            // obtenemos ganador
+            int ganador = Integer.parseInt(vistaAdministrador.pedirDato(
+                    "Ingrese ID de la pareja ganadora (" + partido.getPareja1().getIdPareja() + " o " + partido.getPareja2().getIdPareja() + "): "
+            ));
+
+            int perdedor;
+            if (ganador == partido.getPareja1().getIdPareja()) {
+                perdedor = partido.getPareja2().getIdPareja();
+            } else if (ganador == partido.getPareja2().getIdPareja()) {
+                perdedor = partido.getPareja1().getIdPareja();
+            } else {
+                vistaAdministrador.mensaje("ID de pareja ganadora inválido.");
+                return;
+            }
+
+            // actualizamos estadisticas
+            sistema.getEstadisticaDAO().actualizarEstadisticas(ganador, perdedor);
+
+            vistaAdministrador.mensaje("Resultado y estadísticas actualizadas correctamente.");
+
+        } catch (Exception e) {
+            vistaAdministrador.mensaje("Error al cargar resultado: " + e.getMessage());
+        }
+    }
+
+    
+    // metodo para consultar todos los partidos 
+    public void consultarPartidosDelTorneo() {
+        try {
+            List<Partido> partidos = sistema.getListaPartidos();
+
+            if (partidos.isEmpty()) {
+                vistaAdministrador.mensaje("No hay partidos cargados.");
+                return;
+            }
+
+            vistaAdministrador.mensaje("=== PARTIDOS PROGRAMADOS ===");
+
+            for (Partido partido : partidos) {
+                vistaAdministrador.mensaje(
+                        String.format("Partido ID: %d | Pareja 1: %s y %s | Pareja 2: %s y %s | Grupo: %s | Resultado: %s",
+                                partido.getIdPartido(),
+                                partido.getPareja1().getJugador1().getNombre(),
+                                partido.getPareja1().getJugador2().getNombre(),
+                                partido.getPareja2().getJugador1().getNombre(),
+                                partido.getPareja2().getJugador2().getNombre(),
+                                partido.getIdGrupo(),
+                                partido.getResultado().isEmpty() ? "Pendiente" : partido.getResultado()
+                        )
+                );
+            }
+
+        } catch (Exception e) {
+            vistaAdministrador.mensaje("Error al consultar partidos: " + e.getMessage());
         }
     }
 
