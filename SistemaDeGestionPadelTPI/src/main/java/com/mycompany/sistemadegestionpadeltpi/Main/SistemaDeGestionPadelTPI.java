@@ -37,7 +37,7 @@ public class SistemaDeGestionPadelTPI {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
             Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "popi2025"
+                    "jdbc:mysql://localhost:3306/sistemapadel", "root", "frodo1234"
             );
 
             SistemaDeGestionPadelTPI sistema = new SistemaDeGestionPadelTPI(con);
@@ -46,22 +46,6 @@ public class SistemaDeGestionPadelTPI {
             sistema.traerJugadoresDesdeBD();
             sistema.traerParejasDesdeBD();
             sistema.traerPartidosDesdeBD();
-
-            // printeamos para verificar que todo salio bien
-            System.out.println("=== LISTA DE JUGADORES ===");
-            for (Jugador j : sistema.getListaJugadores()) {
-                System.out.println(j);
-            }
-
-            System.out.println("=== LISTA DE PAREJAS ===");
-            for (Pareja p : sistema.getListaParejas()) {
-                System.out.println(p);
-            }
-
-            System.out.println("=== LISTA DE PARTIDOS ===");
-            for (Partido p : sistema.getListaPartidos()) {
-                System.out.println(p);
-            }
 
             // ejecucion del menu general
             ControladorGeneral controlador = new ControladorGeneral(sistema);
@@ -112,7 +96,7 @@ public class SistemaDeGestionPadelTPI {
                 Jugador jugador1 = jugadorDAO.buscarJugadorPorId(idJugador1);
                 Jugador jugador2 = jugadorDAO.buscarJugadorPorId(idJugador2);
 
-                Pareja pareja = new Pareja(idPareja, jugador1, jugador2,idTorneo, idGrupo);
+                Pareja pareja = new Pareja(idPareja, jugador1, jugador2, idTorneo, idGrupo);
                 listaParejas.add(pareja);
             }
 
@@ -138,7 +122,7 @@ public class SistemaDeGestionPadelTPI {
                 Pareja pareja1 = parejaDAO.buscarParejaPorId(idPareja1);
                 Pareja pareja2 = parejaDAO.buscarParejaPorId(idPareja2);
 
-                listaPartidos.add(new Partido(id, pareja1, pareja2, resultado,idTorneo, idGrupo));
+                listaPartidos.add(new Partido(id, pareja1, pareja2, resultado, idTorneo, idGrupo));
             }
 
         } catch (Exception e) {
