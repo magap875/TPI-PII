@@ -125,4 +125,33 @@ public class EstadisticaDAO {
         }
     }
 
+    // obtenemos la pareja ganadora, la que tiene mas partidos ganados
+    public Estadistica obtenerParejaGanadora(int idTorneo) throws SQLException {
+        String sql = """
+        SELECT e.*
+        FROM estadistica e
+        JOIN pareja p ON e.idPareja = p.idPareja
+        WHERE p.idTorneo = ?
+        ORDER BY e.partidosGanados DESC,
+                 (e.partidosGanados - e.partidosPerdidos) DESC,
+                 e.partidosJugados DESC
+        LIMIT 1
+    """;
+
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idTorneo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Estadistica(
+                            rs.getInt("idPareja"),
+                            rs.getInt("partidosJugados"),
+                            rs.getInt("partidosGanados"),
+                            rs.getInt("partidosPerdidos")
+                    );
+                }
+            }
+        }
+
+        return null;
+    }
 }

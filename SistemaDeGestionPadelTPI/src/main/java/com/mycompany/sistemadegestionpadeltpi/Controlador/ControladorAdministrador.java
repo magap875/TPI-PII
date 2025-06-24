@@ -44,6 +44,8 @@ public class ControladorAdministrador {
                     consultarPartidosDelTorneo();
                 case 5 ->
                     verClasificacion();
+                case 6 ->
+                    mostrarGanador();
             }
         } while (opcion != 0);
     }
@@ -283,4 +285,55 @@ public class ControladorAdministrador {
             e.printStackTrace();
         }
     }
+
+    // metodo que creamos para obtener una pareja ganadora
+    public Pareja obtenerParejaGanadora(int idTorneo) throws SQLException {
+        Estadistica estadisticaGanadora = sistema.getEstadisticaDAO().obtenerParejaGanadora(idTorneo);
+
+        if (estadisticaGanadora != null) {
+            return sistema.getParejaDAO().buscarParejaPorId(estadisticaGanadora.getIdPareja());
+        }
+
+        return null;
+    }
+
+    // metodo para posteriormente mostrarla
+    public void mostrarGanador() {
+        try {
+            int idTorneo = Integer.parseInt(vistaAdministrador.pedirDato("Ingrese el ID del torneo: "));
+            Pareja campeona = obtenerParejaGanadora(idTorneo);
+
+            if (campeona != null) {
+                Estadistica estadistica = sistema.getEstadisticaDAO().buscarEstadisticaPorIdPareja(campeona.getIdPareja());
+
+                if (estadistica != null) {
+                    vistaAdministrador.mensaje("");
+                    vistaAdministrador.mensaje("Criterios para desempate:");
+                    vistaAdministrador.mensaje("1) Mas partidos ganados.");
+                    vistaAdministrador.mensaje("2) Mayor diferencia entre ganados y perdidos.");
+                    vistaAdministrador.mensaje("3) Menor cantidad de partidos jugados.\n");
+                    
+                    vistaAdministrador.mensaje("");
+                    vistaAdministrador.mensaje("La PAREJA CAMPEONA es: "
+                            + campeona.getJugador1().getNombre() + " y "
+                            + campeona.getJugador2().getNombre());
+                    
+                    vistaAdministrador.mensaje("");
+                    vistaAdministrador.mensaje("Estadisticas:");
+                    vistaAdministrador.mensaje("a. Partidos jugados: " + estadistica.getPartidosJugados());
+                    vistaAdministrador.mensaje("b. Partidos ganados: " + estadistica.getPartidosGanados());
+                    vistaAdministrador.mensaje("c. Partidos perdidos: " + estadistica.getPartidosPerdidos());
+                } else {
+                    vistaAdministrador.mensaje("No se encontraron estadisticas para la pareja ganadora.");
+                }
+
+            } else {
+                vistaAdministrador.mensaje("No se pudo determinar una pareja ganadora.");
+            }
+
+        } catch (SQLException e) {
+            vistaAdministrador.mensaje("Error al obtener la pareja ganadora: " + e.getMessage());
+        }
+    }
+
 }

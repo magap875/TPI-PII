@@ -9,6 +9,7 @@ import com.mycompany.sistemadegestionpadeltpi.Modelos.Jugador;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Pareja;
 import com.mycompany.sistemadegestionpadeltpi.Modelos.Partido;
 import com.mycompany.sistemadegestionpadeltpi.Vista.VistaJugador;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -36,6 +37,8 @@ public class ControladorJugador {
                     consultarPartidosDelTorneo();
                 case 4 ->
                     verClasificacion();
+                case 5 ->
+                    mostrarGanador();
             }
         } while (opcion != 0);
     }
@@ -221,6 +224,56 @@ public class ControladorJugador {
         } catch (Exception e) {
             vistaJugador.mensaje("Error al mostrar clasificacion: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    // metodo que creamos para obtener una pareja ganadora
+    public Pareja obtenerParejaGanadora(int idTorneo) throws SQLException {
+        Estadistica estadisticaGanadora = sistema.getEstadisticaDAO().obtenerParejaGanadora(idTorneo);
+
+        if (estadisticaGanadora != null) {
+            return sistema.getParejaDAO().buscarParejaPorId(estadisticaGanadora.getIdPareja());
+        }
+
+        return null;
+    }
+
+    // metodo para posteriormente mostrarla
+    public void mostrarGanador() {
+        try {
+            int idTorneo = Integer.parseInt(vistaJugador.pedirDato("Ingrese el ID del torneo: "));
+            Pareja campeona = obtenerParejaGanadora(idTorneo);
+
+            if (campeona != null) {
+                Estadistica estadistica = sistema.getEstadisticaDAO().buscarEstadisticaPorIdPareja(campeona.getIdPareja());
+
+                if (estadistica != null) {
+                    vistaJugador.mensaje("");
+                    vistaJugador.mensaje("Criterios para desempate:");
+                    vistaJugador.mensaje("1) Mas partidos ganados.");
+                    vistaJugador.mensaje("2) Mayor diferencia entre ganados y perdidos.");
+                    vistaJugador.mensaje("3) Menor cantidad de partidos jugados.\n");
+                    
+                    vistaJugador.mensaje("");
+                    vistaJugador.mensaje("La PAREJA CAMPEONA es: "
+                            + campeona.getJugador1().getNombre() + " y "
+                            + campeona.getJugador2().getNombre());
+                    
+                    vistaJugador.mensaje("");
+                    vistaJugador.mensaje("Estadisticas:");
+                    vistaJugador.mensaje("a. Partidos jugados: " + estadistica.getPartidosJugados());
+                    vistaJugador.mensaje("b. Partidos ganados: " + estadistica.getPartidosGanados());
+                    vistaJugador.mensaje("c. Partidos perdidos: " + estadistica.getPartidosPerdidos());
+                } else {
+                    vistaJugador.mensaje("No se encontraron estadisticas para la pareja ganadora.");
+                }
+
+            } else {
+                vistaJugador.mensaje("No se pudo determinar una pareja ganadora.");
+            }
+
+        } catch (SQLException e) {
+            vistaJugador.mensaje("Error al obtener la pareja ganadora: " + e.getMessage());
         }
     }
 }
